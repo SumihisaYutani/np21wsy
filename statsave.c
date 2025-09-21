@@ -134,8 +134,8 @@ enum
 	STATFLAG_HDRVNT,
 	STATFLAG_MASK				= 0x3fff,
 	
-	STATFLAG_BWD_COMPATIBLE			= 0x4000, // ‚±‚Ìƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚é‚Æ‚«AŒÃ‚¢ƒo[ƒWƒ‡ƒ“‚ÌƒXƒe[ƒgƒZ[ƒu‚ÆŒÝŠ·«‚ª‚ ‚éi‘«‚è‚È‚¢ƒf[ƒ^‚Í0‚Å–„‚ß‚ç‚ê‚é‚Ì‚Å’ˆÓ‚·‚éj‚¢‚Ü‚Ì‚Æ‚±‚ëSTATFLAG_BIN‚Ì‚ÝƒTƒ|[ƒg
-	STATFLAG_FWD_COMPATIBLE			= 0x8000, // ‚±‚Ìƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚é‚Æ‚«AV‚µ‚¢ƒo[ƒWƒ‡ƒ“‚ÌƒXƒe[ƒgƒZ[ƒu‚ÆŒÝŠ·«‚ª‚ ‚éi‘«‚è‚È‚¢ƒf[ƒ^‚Í–³‚©‚Á‚½‚±‚Æ‚É‚È‚é‚Ì‚Å’ˆÓ‚·‚éj‚¢‚Ü‚Ì‚Æ‚±‚ëSTATFLAG_BIN‚Ì‚ÝƒTƒ|[ƒg
+	STATFLAG_BWD_COMPATIBLE			= 0x4000, // ï¿½ï¿½ï¿½Ìƒtï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½Aï¿½Ã‚ï¿½ï¿½oï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½Zï¿½[ï¿½uï¿½ÆŒÝŠï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½0ï¿½Å–ï¿½ï¿½ß‚ï¿½ï¿½ï¿½Ì‚Å’ï¿½ï¿½Ó‚ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½Ü‚Ì‚Æ‚ï¿½ï¿½ï¿½STATFLAG_BINï¿½Ì‚ÝƒTï¿½|ï¿½[ï¿½g
+	STATFLAG_FWD_COMPATIBLE			= 0x8000, // ï¿½ï¿½ï¿½Ìƒtï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½Aï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½oï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½Zï¿½[ï¿½uï¿½ÆŒÝŠï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½fï¿½[ï¿½^ï¿½Í–ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚É‚È‚ï¿½Ì‚Å’ï¿½ï¿½Ó‚ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½Ü‚Ì‚Æ‚ï¿½ï¿½ï¿½STATFLAG_BINï¿½Ì‚ÝƒTï¿½|ï¿½[ï¿½g
 };
 
 typedef struct {
@@ -400,7 +400,7 @@ void statflag_seterr(STFLAGH sfh, const OEMCHAR *str) {
 
 // ---- function
 
-// ŠÖ”ƒ|ƒCƒ“ƒ^‚ð int‚É•ÏXB
+// ï¿½Öï¿½ï¿½|ï¿½Cï¿½ï¿½ï¿½^ï¿½ï¿½ intï¿½É•ÏXï¿½B
 static BRESULT proc2num(void *func, const PROCTBL *tbl, int size) {
 
 	int		i;
@@ -1010,7 +1010,7 @@ static int flagload_fm(STFLAGH sfh, const SFENTRY *tbl)
 	ret = statflag_read(sfh, &nSoundID, sizeof(nSoundID));
 	if(nSoundID==SOUNDID_INVALID){
 		// new statsave
-		// V•ûŽ®ƒXƒe[ƒgƒZ[ƒuFŒ´‘¥‚Æ‚µ‚Ä\‘¢‘ÌƒTƒCƒY‚ð‘‚­‚æ‚¤‚É•ÏXB•œŒ³Žž‚É‘«‚è‚È‚¢•”•ª‚Í0‚Å–„‚ß‚ç‚ê‚éBƒƒ“ƒo‡‚ð“ü‚ê‘Ö‚¦‚¸’Ç‹L‚µ‚Ä‚¢‚¯‚ÎH•v‚É‚æ‚èŒÝŠ·«ˆÛŽ‚ª‰Â”\B
+		// ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½gï¿½Zï¿½[ï¿½uï¿½Fï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½Ä\ï¿½ï¿½ï¿½ÌƒTï¿½Cï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ‚¤ï¿½É•ÏXï¿½Bï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É‘ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½Å–ï¿½ï¿½ß‚ï¿½ï¿½ï¿½Bï¿½ï¿½ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö‚ï¿½ï¿½ï¿½ï¿½Ç‹Lï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ÎHï¿½vï¿½É‚ï¿½ï¿½ÝŠï¿½ï¿½ï¿½ï¿½ÛŽï¿½ï¿½ï¿½ï¿½Â”\ï¿½B
 		ret = statflag_read(sfh, &nSoundID, sizeof(nSoundID));
 		fmboard_reset(&np2cfg, nSoundID);
 
@@ -1018,12 +1018,12 @@ static int flagload_fm(STFLAGH sfh, const SFENTRY *tbl)
 		if (nSaveFlags & FLAG_MG)
 		{
 			ret |= statflag_read(sfh, &datalen, sizeof(datalen));
-			if(datalen > sizeof(g_musicgen)) return STATFLAG_FAILURE; // ‹Œƒo[ƒWƒ‡ƒ“‚Å“Ç‚ß‚È‚¢‚æ‚¤‚É‚µ‚Ä‚¨‚­iƒRƒƒ“ƒgƒAƒEƒg‚·‚é‚Æ“Ç‚ß‚é‚æ‚¤‚É‚È‚é‚ªA‚¿‚á‚ñ‚Æl‚¦‚ÄÝŒv‚µ‚È‚¢‚ÆŠëŒ¯j
+			if(datalen > sizeof(g_musicgen)) return STATFLAG_FAILURE; // ï¿½ï¿½ï¿½oï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Å“Ç‚ß‚È‚ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½iï¿½Rï¿½ï¿½ï¿½ï¿½ï¿½gï¿½Aï¿½Eï¿½gï¿½ï¿½ï¿½ï¿½Æ“Ç‚ß‚ï¿½æ‚¤ï¿½É‚È‚é‚ªï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½Ælï¿½ï¿½ï¿½ÄÝŒvï¿½ï¿½ï¿½È‚ï¿½ï¿½ÆŠëŒ¯ï¿½j
 			ret |= statflag_read(sfh, &g_musicgen, min(datalen, sizeof(g_musicgen)));
 			if(datalen > sizeof(g_musicgen)){
 				sfh->pos += datalen - sizeof(g_musicgen);
 			}else{
-				memset((UINT8*)(&g_musicgen) + datalen, 0, sizeof(g_musicgen) - datalen); // ‚È‚¢•”•ª‚Í0–„‚ß
+				memset((UINT8*)(&g_musicgen) + datalen, 0, sizeof(g_musicgen) - datalen); // ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½
 			}
 			board14_allkeymake();
 		}
@@ -1037,23 +1037,23 @@ static int flagload_fm(STFLAGH sfh, const SFENTRY *tbl)
 		if (nSaveFlags & FLAG_PCM86)
 		{
 			ret |= statflag_read(sfh, &datalen, sizeof(datalen));
-			if(datalen > sizeof(g_pcm86)) return STATFLAG_FAILURE; // ‹Œƒo[ƒWƒ‡ƒ“‚Å“Ç‚ß‚È‚¢‚æ‚¤‚É‚µ‚Ä‚¨‚­iƒRƒƒ“ƒgƒAƒEƒg‚·‚é‚Æ“Ç‚ß‚é‚æ‚¤‚É‚È‚é‚ªA‚¿‚á‚ñ‚Æl‚¦‚ÄÝŒv‚µ‚È‚¢‚ÆŠëŒ¯j
+			if(datalen > sizeof(g_pcm86)) return STATFLAG_FAILURE; // ï¿½ï¿½ï¿½oï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Å“Ç‚ß‚È‚ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½iï¿½Rï¿½ï¿½ï¿½ï¿½ï¿½gï¿½Aï¿½Eï¿½gï¿½ï¿½ï¿½ï¿½Æ“Ç‚ß‚ï¿½æ‚¤ï¿½É‚È‚é‚ªï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½Ælï¿½ï¿½ï¿½ÄÝŒvï¿½ï¿½ï¿½È‚ï¿½ï¿½ÆŠëŒ¯ï¿½j
 			ret |= statflag_read(sfh, &g_pcm86, min(datalen, sizeof(g_pcm86)));
 			if(datalen > sizeof(g_pcm86)){
 				sfh->pos += datalen - sizeof(g_pcm86);
 			}else{
-				memset((UINT8*)(&g_pcm86) + datalen, 0, sizeof(g_pcm86) - datalen); // ‚È‚¢•”•ª‚Í0–„‚ß
+				memset((UINT8*)(&g_pcm86) + datalen, 0, sizeof(g_pcm86) - datalen); // ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½
 			}
 		}
 		if (nSaveFlags & FLAG_CS4231)
 		{
 			ret |= statflag_read(sfh, &datalen, sizeof(datalen));
-			if(datalen > sizeof(cs4231)) return STATFLAG_FAILURE; // ‹Œƒo[ƒWƒ‡ƒ“‚Å“Ç‚ß‚È‚¢‚æ‚¤‚É‚µ‚Ä‚¨‚­iƒRƒƒ“ƒgƒAƒEƒg‚·‚é‚Æ“Ç‚ß‚é‚æ‚¤‚É‚È‚é‚ªA‚¿‚á‚ñ‚Æl‚¦‚ÄÝŒv‚µ‚È‚¢‚ÆŠëŒ¯j
+			if(datalen > sizeof(cs4231)) return STATFLAG_FAILURE; // ï¿½ï¿½ï¿½oï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Å“Ç‚ß‚È‚ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½iï¿½Rï¿½ï¿½ï¿½ï¿½ï¿½gï¿½Aï¿½Eï¿½gï¿½ï¿½ï¿½ï¿½Æ“Ç‚ß‚ï¿½æ‚¤ï¿½É‚È‚é‚ªï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½Ælï¿½ï¿½ï¿½ÄÝŒvï¿½ï¿½ï¿½È‚ï¿½ï¿½ÆŠëŒ¯ï¿½j
 			ret |= statflag_read(sfh, &cs4231, min(datalen, sizeof(cs4231)));
 			if(datalen > sizeof(cs4231)){
 				sfh->pos += datalen - sizeof(cs4231);
 			}else{
-				memset((UINT8*)(&cs4231) + datalen, 0, sizeof(cs4231) - datalen); // ‚È‚¢•”•ª‚Í0–„‚ß
+				memset((UINT8*)(&cs4231) + datalen, 0, sizeof(cs4231) - datalen); // ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½
 			}
 		}
 		if (nSaveFlags & FLAG_AMD98)
@@ -1092,12 +1092,12 @@ static int flagload_fm(STFLAGH sfh, const SFENTRY *tbl)
 		if (nSaveFlags & FLAG_SB16)
 		{
 			ret |= statflag_read(sfh, &datalen, sizeof(datalen));
-			if(datalen > sizeof(g_sb16)) return STATFLAG_FAILURE; // ‹Œƒo[ƒWƒ‡ƒ“‚Å“Ç‚ß‚È‚¢‚æ‚¤‚É‚µ‚Ä‚¨‚­iƒRƒƒ“ƒgƒAƒEƒg‚·‚é‚Æ“Ç‚ß‚é‚æ‚¤‚É‚È‚é‚ªA‚¿‚á‚ñ‚Æl‚¦‚ÄÝŒv‚µ‚È‚¢‚ÆŠëŒ¯j
+			if(datalen > sizeof(g_sb16)) return STATFLAG_FAILURE; // ï¿½ï¿½ï¿½oï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Å“Ç‚ß‚È‚ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½iï¿½Rï¿½ï¿½ï¿½ï¿½ï¿½gï¿½Aï¿½Eï¿½gï¿½ï¿½ï¿½ï¿½Æ“Ç‚ß‚ï¿½æ‚¤ï¿½É‚È‚é‚ªï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½Ælï¿½ï¿½ï¿½ÄÝŒvï¿½ï¿½ï¿½È‚ï¿½ï¿½ÆŠëŒ¯ï¿½j
 			ret |= statflag_read(sfh, &g_sb16, min(datalen, sizeof(g_sb16)));
 			if(datalen > sizeof(g_sb16)){
 				sfh->pos += datalen - sizeof(g_sb16);
 			}else{
-				memset((UINT8*)(&g_sb16) + datalen, 0, sizeof(g_sb16) - datalen); // ‚È‚¢•”•ª‚Í0–„‚ß
+				memset((UINT8*)(&g_sb16) + datalen, 0, sizeof(g_sb16) - datalen); // ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½
 			}
 		}
 #endif
@@ -1108,7 +1108,7 @@ static int flagload_fm(STFLAGH sfh, const SFENTRY *tbl)
 		{
 			ret |= statflag_read(sfh, &g_musicgen, sizeof(MUSICGEN_OLD));
 			if(sizeof(MUSICGEN_OLD) < sizeof(g_musicgen)){
-				memset((UINT8*)(&g_musicgen) + sizeof(MUSICGEN_OLD), 0, sizeof(g_musicgen) - sizeof(MUSICGEN_OLD)); // ‚È‚¢•”•ª‚Í0–„‚ß
+				memset((UINT8*)(&g_musicgen) + sizeof(MUSICGEN_OLD), 0, sizeof(g_musicgen) - sizeof(MUSICGEN_OLD)); // ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½
 			}
 			board14_allkeymake();
 		}
@@ -1123,7 +1123,7 @@ static int flagload_fm(STFLAGH sfh, const SFENTRY *tbl)
 		{
 			ret |= statflag_read(sfh, &g_pcm86, sizeof(_PCM86_OLD));
 			if(sizeof(_PCM86_OLD) < sizeof(g_pcm86)){
-				memset((UINT8*)(&g_pcm86) + sizeof(_PCM86_OLD), 0, sizeof(g_pcm86) - sizeof(_PCM86_OLD)); // ‚È‚¢•”•ª‚Í0–„‚ß
+				memset((UINT8*)(&g_pcm86) + sizeof(_PCM86_OLD), 0, sizeof(g_pcm86) - sizeof(_PCM86_OLD)); // ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½
 			}
 			g_pcm86.lastclock = g_pcm86.lastclock_obsolate;
 			g_pcm86.stepclock = g_pcm86.stepclock_obsolate;
@@ -1132,7 +1132,7 @@ static int flagload_fm(STFLAGH sfh, const SFENTRY *tbl)
 		{
 			ret |= statflag_read(sfh, &cs4231, sizeof(_CS4231_OLD));
 			if(sizeof(_CS4231_OLD) < sizeof(cs4231)){
-				memset((UINT8*)(&cs4231) + sizeof(_CS4231_OLD), 0, sizeof(cs4231) - sizeof(_CS4231_OLD)); // ‚È‚¢•”•ª‚Í0–„‚ß
+				memset((UINT8*)(&cs4231) + sizeof(_CS4231_OLD), 0, sizeof(cs4231) - sizeof(_CS4231_OLD)); // ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½
 			}
 		}
 		if (nSaveFlags & FLAG_AMD98)
@@ -1172,13 +1172,13 @@ static int flagload_fm(STFLAGH sfh, const SFENTRY *tbl)
 		{
 			ret |= statflag_read(sfh, &g_sb16, sizeof(SB16_OLD));
 			if(sizeof(SB16_OLD) < sizeof(g_sb16)){
-				memset((UINT8*)(&g_sb16) + sizeof(SB16_OLD), 0, sizeof(g_sb16) - sizeof(SB16_OLD)); // ‚È‚¢•”•ª‚Í0–„‚ß
+				memset((UINT8*)(&g_sb16) + sizeof(SB16_OLD), 0, sizeof(g_sb16) - sizeof(SB16_OLD)); // ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½
 			}
 		}
 #endif
 	}
 
-	// •œŒ³B ‚±‚êˆÚ“®‚·‚é‚±‚ÆI
+	// ï¿½ï¿½ï¿½ï¿½ï¿½B ï¿½ï¿½ï¿½ï¿½Ú“ï¿½ï¿½ï¿½ï¿½é‚±ï¿½ÆI
 	pcm86gen_update();
 	if (nSaveFlags & FLAG_PCM86)
 	{
@@ -1191,8 +1191,8 @@ static int flagload_fm(STFLAGH sfh, const SFENTRY *tbl)
 #if defined(SUPPORT_SOUND_SB16)
 	if (nSaveFlags & FLAG_SB16)
 	{
-		g_sb16.dsp_info.dma.chan = dmac.dmach + g_sb16.dmach; // DMAƒ`ƒƒƒlƒ‹•œŒ³
-		dmac_attach(DMADEV_CT1741, g_sb16.dmach); // ÄŠ„‚è“–‚Ä
+		g_sb16.dsp_info.dma.chan = dmac.dmach + g_sb16.dmach; // DMAï¿½`ï¿½ï¿½ï¿½lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		dmac_attach(DMADEV_CT1741, g_sb16.dmach); // ï¿½ÄŠï¿½ï¿½è“–ï¿½ï¿½
 	}
 #endif
 	return(ret);
@@ -1287,7 +1287,7 @@ const OEMCHAR	*path;
 	for (i=0; i<NELEMENTS(sds.ide); i++) {
 		if (sds.ide[i] != SXSIDEV_NC) {
 #if defined(SUPPORT_IDEIO)&&defined(SUPPORT_PHYSICAL_CDDRV)
-			if(sds.ide[i]==SXSIDEV_CDROM){ // CD-ROM‚Ìê‡Anp2cfg‚ð—Dæ
+			if(sds.ide[i]==SXSIDEV_CDROM){ // CD-ROMï¿½Ìê‡ï¿½Anp2cfgï¿½ï¿½Dï¿½ï¿½
 				path = np2cfg.idecd[i];
 			}else
 #endif
@@ -1323,7 +1323,7 @@ static int flagcheck_sxsi(STFLAGH sfh, const SFENTRY *tbl) {
 				ret |= statflag_checkpath(sfh, buf);
 			}else{
 				OEMSPRINTF(buf, str_sasix, i+1);
-				statflag_checkpath(sfh, buf); // CD‚ÌŽžAƒtƒ‰ƒO‚É‚Í‰e‹¿‚³‚¹‚È‚¢
+				statflag_checkpath(sfh, buf); // CDï¿½ÌŽï¿½ï¿½Aï¿½tï¿½ï¿½ï¿½Oï¿½É‚Í‰eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
 			}
 		}
 	}
@@ -1334,7 +1334,7 @@ static int flagcheck_sxsi(STFLAGH sfh, const SFENTRY *tbl) {
 				ret |= statflag_checkpath(sfh, buf);
 			}else{
 				OEMSPRINTF(buf, str_scsix, i);
-				statflag_checkpath(sfh, buf); // CD‚ÌŽžAƒtƒ‰ƒO‚É‚Í‰e‹¿‚³‚¹‚È‚¢
+				statflag_checkpath(sfh, buf); // CDï¿½ÌŽï¿½ï¿½Aï¿½tï¿½ï¿½ï¿½Oï¿½É‚Í‰eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
 			}
 		}
 	}
@@ -1730,7 +1730,7 @@ const SFENTRY	*tblterm;
 	sound_reset();
 	fddmtrsnd_bind();
 
-	iocore_reset(&np2cfg);							// ƒTƒEƒ“ƒh‚Åpic‚ðŒÄ‚Ô‚Ì‚Åc
+	iocore_reset(&np2cfg);							// ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½ï¿½picï¿½ï¿½ï¿½Ä‚Ô‚Ì‚Åc
 	cbuscore_reset(&np2cfg);
 	fmboard_reset(&np2cfg, pccore.sound);
 
@@ -1824,7 +1824,7 @@ const SFENTRY	*tblterm;
 	}
 	statflag_close(sffh);
 
-	// ƒXƒe[ƒgƒZ[ƒuŒÝŠ·«ˆÛŽ—p
+	// ï¿½Xï¿½eï¿½[ï¿½gï¿½Zï¿½[ï¿½uï¿½ÝŠï¿½ï¿½ï¿½ï¿½ÛŽï¿½ï¿½p
 	if(pccore.maxmultiple == 0) pccore.maxmultiple = pccore.multiple;
 	
 #if defined(SUPPORT_IA32_HAXM)
@@ -1844,21 +1844,21 @@ const SFENTRY	*tblterm;
 	np2haxcore.I_ratio = 0;
 #endif
 
-	// I/Oì‚è’¼‚µ
+	// I/Oï¿½ï¿½è’¼ï¿½ï¿½
 	MEMM_ARCH((pccore.model & PCMODEL_EPSON)?1:0);
 	iocore_build();
 	iocore_bind();
 	cbuscore_bind();
 	fmboard_bind();
 	
-	// DA/UA‚Æ—v‘f”Ô†‚Ì‘Î‰žŠÖŒW‚ð‰Šú‰»
+	// DA/UAï¿½Æ—vï¿½fï¿½Ôï¿½ï¿½Ì‘Î‰ï¿½ï¿½ÖŒWï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	for(i=0;i<4;i++){
 		sxsi_unittbl[i] = i;
 	}
 #if defined(SUPPORT_IDEIO)
 	if (pccore.hddif & PCHDD_IDE) {
 		int i, idx, ncidx;
-		// –¢Ú‘±‚Ì‚à‚Ì‚ð–³Ž‹‚µ‚ÄÚ‘±‡‚ÉDA/UA‚ðŠ„‚è“–‚Ä‚é
+		// ï¿½ï¿½ï¿½Ú‘ï¿½ï¿½Ì‚ï¿½ï¿½Ì‚ð–³Žï¿½ï¿½ï¿½ï¿½ÄÚ‘ï¿½ï¿½ï¿½ï¿½ï¿½DA/UAï¿½ï¿½ï¿½ï¿½ï¿½è“–ï¿½Ä‚ï¿½
 		ncidx = idx = 0;
 		for(i=0;i<4;i++){
 			if(sxsi_getdevtype(i)==SXSIDEV_HDD){
@@ -1869,7 +1869,7 @@ const SFENTRY	*tblterm;
 			}
 		}
 		for(;idx<4;idx++){
-			sxsi_unittbl[idx] = ncidx; // XXX: —]‚Á‚½DA/UA‚Í‚Æ‚è‚ ‚¦‚¸–¢Ú‘±‚Ì”Ô†‚ÉÝ’è
+			sxsi_unittbl[idx] = ncidx; // XXX: ï¿½]ï¿½ï¿½ï¿½ï¿½DA/UAï¿½Í‚Æ‚è‚ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú‘ï¿½ï¿½Ì”Ôï¿½ï¿½ÉÝ’ï¿½
 		}
 	}
 #endif
@@ -1900,7 +1900,7 @@ const SFENTRY	*tblterm;
 	pc98_cirrus_vga_load();
 #endif
 	
-	// OPNAƒ{ƒŠƒ…[ƒ€ÄÝ’è
+	// OPNAï¿½{ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ÄÝ’ï¿½
 	if(g_nSoundID == SOUNDID_WAVESTAR){
 		opngen_setvol(np2cfg.vol_fm * cs4231.devvolume[0xff] / 15 * np2cfg.vol_master / 100);
 		psggen_setvol(np2cfg.vol_ssg * cs4231.devvolume[0xff] / 15 * np2cfg.vol_master / 100);
@@ -1947,7 +1947,7 @@ const SFENTRY	*tblterm;
 #if defined(SUPPORT_WAB)
 	{
 		UINT8 wabaswtmp = np2cfg.wabasw;
-		np2cfg.wabasw = 1; // ƒŠƒŒ[‰¹‚ð–Â‚ç‚³‚È‚¢
+		np2cfg.wabasw = 1; // ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½Â‚ç‚³ï¿½È‚ï¿½
 		np2wab.relay = 0;
 		np2wab_setRelayState(np2wab.relaystateint|np2wab.relaystateext);
 		np2wab.realWidth = np2wab.wndWidth; // XXX: ???
@@ -1964,9 +1964,567 @@ const SFENTRY	*tblterm;
 	rs232c_vfast_setrs232cspeed(rs232cfifo.vfast);
 #endif
 
-	// ƒJ[ƒ\ƒ‹•\Ž¦ó‘Ô•œŒ³
+	// ï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½Ô•ï¿½ï¿½ï¿½
 	mousemng_updateautohidecursor();
-	
+
 	return(ret);
 }
+
+// ---- Extended API Implementation for 200-slot functionality
+
+static NP2SLOT_MASTER g_slot_master;
+static BOOL g_slot_master_loaded = FALSE;
+
+/**
+ * @brief Load slot master file
+ */
+static int slot_master_load(void)
+{
+	FILEH fh;
+	OEMCHAR path[MAX_PATH];
+
+	if (g_slot_master_loaded) {
+		return SUCCESS;
+	}
+
+	// Build path to slots master file
+	// file_cpyname(path, modulefile, sizeof(path));
+	file_cpyname(path, OEMTEXT("."), sizeof(path));
+	file_cutname(path);
+	file_catname(path, OEMTEXT("np2.slots"), sizeof(path));
+
+	fh = file_open_rb(path);
+	if (fh == FILEH_INVALID) {
+		// Initialize empty slot master
+		ZeroMemory(&g_slot_master, sizeof(g_slot_master));
+		g_slot_master.signature = 0x544F4C53; // 'SLOT'
+		g_slot_master.version = 1;
+		g_slot_master.slot_count = 200;
+		g_slot_master.used_count = 0;
+		g_slot_master_loaded = TRUE;
+		return SUCCESS;
+	}
+
+	if (file_read(fh, &g_slot_master, sizeof(g_slot_master)) != sizeof(g_slot_master)) {
+		file_close(fh);
+		return FAILURE;
+	}
+
+	file_close(fh);
+
+	// Validate signature
+	if (g_slot_master.signature != 0x544F4C53) {
+		return FAILURE;
+	}
+
+	g_slot_master_loaded = TRUE;
+	return SUCCESS;
+}
+
+/**
+ * @brief Save slot master file
+ */
+static int slot_master_save(void)
+{
+	FILEH fh;
+	OEMCHAR path[MAX_PATH];
+
+	// Build path to slots master file
+	// file_cpyname(path, modulefile, sizeof(path));
+	file_cpyname(path, OEMTEXT("."), sizeof(path));
+	file_cutname(path);
+	file_catname(path, OEMTEXT("np2.slots"), sizeof(path));
+
+	fh = file_create(path);
+	if (fh == FILEH_INVALID) {
+		return FAILURE;
+	}
+
+	// Update checksum
+	g_slot_master.master_checksum = 0; // TODO: Calculate actual checksum
+
+	if (file_write(fh, &g_slot_master, sizeof(g_slot_master)) != sizeof(g_slot_master)) {
+		file_close(fh);
+		return FAILURE;
+	}
+
+	file_close(fh);
+	return SUCCESS;
+}
+
+/**
+ * @brief Validate slot range
+ */
+static int slot_validate_range(int slot)
+{
+	return (slot >= 0 && slot < 200) ? SUCCESS : FAILURE;
+}
+
+/**
+ * @brief Extended save with slot number and comment
+ */
+int statsave_save_ext(int slot, const char *comment)
+{
+	OEMCHAR filename[MAX_PATH];
+	OEMCHAR ext[8];
+	int ret;
+
+	TRACEOUT(("StatsaveExt: Save slot %d requested\n", slot));
+	if (slot_validate_range(slot) != SUCCESS) {
+		TRACEOUT(("StatsaveExt: Invalid slot range %d\n", slot));
+		return FAILURE;
+	}
+
+	if (slot_master_load() != SUCCESS) {
+		TRACEOUT(("StatsaveExt: Failed to load slot master\n"));
+		return FAILURE;
+	}
+
+	// Generate filename
+	OEMSPRINTF(ext, OEMTEXT("S%03d"), slot);
+	// file_cpyname(filename, modulefile, sizeof(filename));
+	file_cpyname(filename, OEMTEXT("."), sizeof(filename));
+	file_cutname(filename);
+	file_catname(filename, OEMTEXT("NP2."), sizeof(filename));
+	file_catname(filename, ext, sizeof(filename));
+
+	TRACEOUT(("StatsaveExt: Saving to file: %s\n", filename));
+	// Save state file
+	ret = statsave_save(filename);
+	if (ret == SUCCESS) {
+		TRACEOUT(("StatsaveExt: State save successful for slot %d\n", slot));
+#ifdef _WIN32
+		// Create and save thumbnail automatically
+		HBITMAP hThumbnail = statsave_create_thumbnail();
+		if (hThumbnail) {
+			statsave_save_thumbnail(slot, hThumbnail);
+			DeleteObject(hThumbnail);
+		}
+#endif
+
+		// Update slot info
+		NP2SLOT_INFO *info = &g_slot_master.slots[slot];
+		info->used = TRUE;
+		info->protect_flag = FALSE;
+		info->flags = 0;
+#ifdef _WIN32
+		// Set save time (Windows specific)
+		GetSystemTimeAsFileTime((FILETIME*)&info->save_time);
+#endif
+		// info->file_size = 0; // TODO: Get actual file size
+
+		if (comment) {
+			strncpy(info->comment, comment, sizeof(info->comment) - 1);
+			info->comment[sizeof(info->comment) - 1] = '\0';
+		} else {
+			// Clear comment
+			info->comment[0] = '\0';
+		}
+
+		// Set default title (can be improved with game detection)
+		snprintf(info->title, sizeof(info->title), "Slot %03d", slot);
+
+		// Update used count
+		int used_count = 0;
+		for (int i = 0; i < 200; i++) {
+			if (g_slot_master.slots[i].used) {
+				used_count++;
+			}
+		}
+		g_slot_master.used_count = used_count;
+
+		slot_master_save();
+	}
+
+	return ret;
+}
+
+/**
+ * @brief Extended load with slot number
+ */
+int statsave_load_ext(int slot)
+{
+	OEMCHAR filename[MAX_PATH];
+	OEMCHAR ext[8];
+
+	TRACEOUT(("StatsaveExt: Load slot %d requested\n", slot));
+	if (slot_validate_range(slot) != SUCCESS) {
+		TRACEOUT(("StatsaveExt: Invalid slot range %d\n", slot));
+		return FAILURE;
+	}
+
+	if (slot_master_load() != SUCCESS) {
+		TRACEOUT(("StatsaveExt: Failed to load slot master\n"));
+		return FAILURE;
+	}
+
+	// Check if slot is used
+	if (!g_slot_master.slots[slot].used) {
+		TRACEOUT(("StatsaveExt: Slot %d is not used\n", slot));
+		return FAILURE;
+	}
+
+	// Generate filename
+	OEMSPRINTF(ext, OEMTEXT("S%03d"), slot);
+	// file_cpyname(filename, modulefile, sizeof(filename));
+	file_cpyname(filename, OEMTEXT("."), sizeof(filename));
+	file_cutname(filename);
+	file_catname(filename, OEMTEXT("NP2."), sizeof(filename));
+	file_catname(filename, ext, sizeof(filename));
+
+	TRACEOUT(("StatsaveExt: Loading from file: %s\n", filename));
+	int ret = statsave_load(filename);
+	if (ret == SUCCESS) {
+		TRACEOUT(("StatsaveExt: State load successful for slot %d\n", slot));
+	} else {
+		TRACEOUT(("StatsaveExt: State load failed for slot %d\n", slot));
+	}
+	return ret;
+}
+
+/**
+ * @brief Delete slot
+ */
+int statsave_delete_ext(int slot)
+{
+	OEMCHAR filename[MAX_PATH];
+	OEMCHAR ext[8];
+
+	if (slot_validate_range(slot) != SUCCESS) {
+		return FAILURE;
+	}
+
+	if (slot_master_load() != SUCCESS) {
+		return FAILURE;
+	}
+
+	// Generate filename
+	OEMSPRINTF(ext, OEMTEXT("S%03d"), slot);
+	// file_cpyname(filename, modulefile, sizeof(filename));
+	file_cpyname(filename, OEMTEXT("."), sizeof(filename));
+	file_cutname(filename);
+	file_catname(filename, OEMTEXT("NP2."), sizeof(filename));
+	file_catname(filename, ext, sizeof(filename));
+
+	// Delete state file
+	file_delete(filename);
+
+	// Delete thumbnail file
+	file_catname(filename, OEMTEXT(".thumb"), sizeof(filename));
+	file_delete(filename);
+
+	// Update slot info
+	ZeroMemory(&g_slot_master.slots[slot], sizeof(NP2SLOT_INFO));
+
+	// Update used count
+	int used_count = 0;
+	for (int i = 0; i < 200; i++) {
+		if (g_slot_master.slots[i].used) {
+			used_count++;
+		}
+	}
+	g_slot_master.used_count = used_count;
+
+	slot_master_save();
+	return SUCCESS;
+}
+
+/**
+ * @brief Get slot information
+ */
+int statsave_get_info(int slot, NP2SLOT_INFO *info)
+{
+	if (slot_validate_range(slot) != SUCCESS || !info) {
+		return FAILURE;
+	}
+
+	if (slot_master_load() != SUCCESS) {
+		return FAILURE;
+	}
+
+	*info = g_slot_master.slots[slot];
+	return SUCCESS;
+}
+
+/**
+ * @brief Get total slot count
+ */
+int statsave_get_slot_count(void)
+{
+	return 200;
+}
+
+/**
+ * @brief Get used slots
+ */
+int statsave_get_used_slots(int *slots, int max_count)
+{
+	if (!slots || max_count <= 0) {
+		return 0;
+	}
+
+	if (slot_master_load() != SUCCESS) {
+		return 0;
+	}
+
+	int count = 0;
+	for (int i = 0; i < 200 && count < max_count; i++) {
+		if (g_slot_master.slots[i].used) {
+			slots[count++] = i;
+		}
+	}
+
+	return count;
+}
+
+/**
+ * @brief Get slot master
+ */
+int statsave_get_slot_master(NP2SLOT_MASTER *master)
+{
+	if (!master) {
+		return FAILURE;
+	}
+
+	if (slot_master_load() != SUCCESS) {
+		return FAILURE;
+	}
+
+	*master = g_slot_master;
+	return SUCCESS;
+}
+
+#ifdef _WIN32
+// ---- Windows-specific thumbnail implementation
+
+#include "win9x/np2.h"
+
+/**
+ * @brief Create thumbnail from current screen
+ */
+HBITMAP statsave_create_thumbnail(void)
+{
+	HDC hdc, hdcMem;
+	HBITMAP hBitmap;
+	BITMAPINFO bmi;
+	void *pBits;
+
+	// Create thumbnail size (80x64 recommended)
+	int thumb_width = 80;
+	int thumb_height = 64;
+
+	// Create compatible DC and bitmap
+	hdc = GetDC(NULL);
+	hdcMem = CreateCompatibleDC(hdc);
+
+	// Setup bitmap info for 24-bit thumbnail
+	ZeroMemory(&bmi, sizeof(bmi));
+	bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bmi.bmiHeader.biWidth = thumb_width;
+	bmi.bmiHeader.biHeight = -thumb_height; // Negative for top-down
+	bmi.bmiHeader.biPlanes = 1;
+	bmi.bmiHeader.biBitCount = 24;
+	bmi.bmiHeader.biCompression = BI_RGB;
+
+	// Create DIB section for thumbnail
+	hBitmap = CreateDIBSection(hdc, &bmi, DIB_RGB_COLORS, &pBits, NULL, 0);
+	if (!hBitmap) {
+		DeleteDC(hdcMem);
+		ReleaseDC(NULL, hdc);
+		return NULL;
+	}
+
+	// Fill with a simple pattern for now
+	if (pBits) {
+		memset(pBits, 0x80, thumb_width * thumb_height * 3);
+	}
+
+	// Cleanup
+	DeleteDC(hdcMem);
+	ReleaseDC(NULL, hdc);
+
+	return hBitmap;
+}
+
+/**
+ * @brief Save thumbnail for a slot
+ */
+int statsave_save_thumbnail(int slot, HBITMAP hBitmap)
+{
+	OEMCHAR filename[MAX_PATH];
+	OEMCHAR ext[8];
+	FILEH fh;
+	BITMAP bm;
+	BITMAPINFOHEADER bih;
+	BITMAPFILEHEADER bfh;
+	HDC hdc;
+	UINT8 *bits;
+	DWORD bytesWritten;
+
+	if (slot_validate_range(slot) != SUCCESS || !hBitmap) {
+		return FAILURE;
+	}
+
+	// Generate thumbnail filename
+	OEMSPRINTF(ext, OEMTEXT("S%03d"), slot);
+	// file_cpyname(filename, modulefile, sizeof(filename));
+	file_cpyname(filename, OEMTEXT("."), sizeof(filename));
+	file_cutname(filename);
+	file_catname(filename, OEMTEXT("NP2."), sizeof(filename));
+	file_catname(filename, ext, sizeof(filename));
+	file_catname(filename, OEMTEXT(".thumb"), sizeof(filename));
+
+	// Get bitmap info
+	if (!GetObject(hBitmap, sizeof(BITMAP), &bm)) {
+		return FAILURE;
+	}
+
+	// Setup bitmap headers
+	ZeroMemory(&bih, sizeof(bih));
+	bih.biSize = sizeof(BITMAPINFOHEADER);
+	bih.biWidth = bm.bmWidth;
+	bih.biHeight = bm.bmHeight;
+	bih.biPlanes = 1;
+	bih.biBitCount = 24;
+	bih.biCompression = BI_RGB;
+	bih.biSizeImage = ((bm.bmWidth * 3 + 3) & ~3) * bm.bmHeight;
+
+	ZeroMemory(&bfh, sizeof(bfh));
+	bfh.bfType = 0x4D42; // 'BM'
+	bfh.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + bih.biSizeImage;
+	bfh.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+
+	// Allocate buffer for bitmap bits
+	bits = (UINT8*)_MALLOC(bih.biSizeImage, "thumbnail bits");
+	if (!bits) {
+		return FAILURE;
+	}
+
+	// Get bitmap bits
+	hdc = GetDC(NULL);
+	if (!GetDIBits(hdc, hBitmap, 0, bm.bmHeight, bits, (BITMAPINFO*)&bih, DIB_RGB_COLORS)) {
+		ReleaseDC(NULL, hdc);
+		_MFREE(bits);
+		return FAILURE;
+	}
+	ReleaseDC(NULL, hdc);
+
+	// Write to file
+	fh = file_create(filename);
+	if (fh == FILEH_INVALID) {
+		_MFREE(bits);
+		return FAILURE;
+	}
+
+	// Write BMP file header
+	if (file_write(fh, &bfh, sizeof(bfh)) != sizeof(bfh)) {
+		file_close(fh);
+		_MFREE(bits);
+		return FAILURE;
+	}
+
+	// Write BMP info header
+	if (file_write(fh, &bih, sizeof(bih)) != sizeof(bih)) {
+		file_close(fh);
+		_MFREE(bits);
+		return FAILURE;
+	}
+
+	// Write bitmap data
+	if (file_write(fh, bits, bih.biSizeImage) != bih.biSizeImage) {
+		file_close(fh);
+		_MFREE(bits);
+		return FAILURE;
+	}
+
+	file_close(fh);
+	_MFREE(bits);
+
+	return SUCCESS;
+}
+
+/**
+ * @brief Load thumbnail for a slot
+ */
+HBITMAP statsave_load_thumbnail(int slot)
+{
+	OEMCHAR filename[MAX_PATH];
+	OEMCHAR ext[8];
+	FILEH fh;
+	BITMAPFILEHEADER bfh;
+	BITMAPINFOHEADER bih;
+	UINT8 *bits;
+	HDC hdc;
+	HBITMAP hBitmap;
+
+	if (slot_validate_range(slot) != SUCCESS) {
+		return NULL;
+	}
+
+	// Generate thumbnail filename
+	OEMSPRINTF(ext, OEMTEXT("S%03d"), slot);
+	// file_cpyname(filename, modulefile, sizeof(filename));
+	file_cpyname(filename, OEMTEXT("."), sizeof(filename));
+	file_cutname(filename);
+	file_catname(filename, OEMTEXT("NP2."), sizeof(filename));
+	file_catname(filename, ext, sizeof(filename));
+	file_catname(filename, OEMTEXT(".thumb"), sizeof(filename));
+
+	// Open file
+	fh = file_open_rb(filename);
+	if (fh == FILEH_INVALID) {
+		return NULL;
+	}
+
+	// Read BMP file header
+	if (file_read(fh, &bfh, sizeof(bfh)) != sizeof(bfh)) {
+		file_close(fh);
+		return NULL;
+	}
+
+	// Validate BMP signature
+	if (bfh.bfType != 0x4D42) {
+		file_close(fh);
+		return NULL;
+	}
+
+	// Read BMP info header
+	if (file_read(fh, &bih, sizeof(bih)) != sizeof(bih)) {
+		file_close(fh);
+		return NULL;
+	}
+
+	// Validate format
+	if (bih.biBitCount != 24 || bih.biCompression != BI_RGB) {
+		file_close(fh);
+		return NULL;
+	}
+
+	// Allocate buffer
+	bits = (UINT8*)_MALLOC(bih.biSizeImage, "thumbnail load");
+	if (!bits) {
+		file_close(fh);
+		return NULL;
+	}
+
+	// Read bitmap data
+	if (file_read(fh, bits, bih.biSizeImage) != bih.biSizeImage) {
+		file_close(fh);
+		_MFREE(bits);
+		return NULL;
+	}
+
+	file_close(fh);
+
+	// Create bitmap from data
+	hdc = GetDC(NULL);
+	hBitmap = CreateBitmap(bih.biWidth, bih.biHeight, 1, 24, bits);
+	ReleaseDC(NULL, hdc);
+
+	_MFREE(bits);
+
+	return hBitmap;
+}
+
+#endif // _WIN32
 

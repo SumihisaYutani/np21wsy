@@ -674,6 +674,7 @@
 #define IDM_SCSI5STATE                  40476
 #define IDM_SCSI6STATE                  40477
 #define IDM_SCSI7STATE                  40478
+#define IDM_STATEMANAGER                40490
 #define IDM_WINDOW                      40501
 #define IDM_FULLSCREEN                  40502
 #define IDM_ROLNORMAL                   40503

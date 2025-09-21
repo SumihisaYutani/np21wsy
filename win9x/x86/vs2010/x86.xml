@@ -50,7 +50,7 @@
       HelpUrl="http://www.nasm.us/doc/"
       DisplayName="Generate Debug Information"
       Description="Generates Debug Information.     (-g)"
-      Switch="-g" />
+      Switch="-g cv8" />
     <StringProperty
       Name="ObjectFileName"
       Category="Object File"

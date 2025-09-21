@@ -131,7 +131,7 @@ char bmpfilefolder[MAX_PATH];
 char modulefile[MAX_PATH];
 char statpath[MAX_PATH];
 
-const char np2flagext[] = "s%02d";
+const char np2flagext[] = "s%03d";
 const char np2resumeext[] = "sav";
 
 #ifndef FONTFACE

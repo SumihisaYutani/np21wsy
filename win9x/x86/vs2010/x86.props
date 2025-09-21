@@ -14,7 +14,7 @@
       <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ObjectFileName>$(IntDir)%(Filename).obj</ObjectFileName>
-      <CommandLineTemplate>nasm.exe -f win32 -Xvc [AllOptions] [AdditionalOptions] [Inputs]</CommandLineTemplate>
+      <CommandLineTemplate>yasm.exe -p nasm -f win32 [AllOptions] [AdditionalOptions] [Inputs]</CommandLineTemplate>
       <Outputs>%(ObjectFileName)</Outputs>
       <ExecutionDescription>Assembling...</ExecutionDescription>
     </NASM>

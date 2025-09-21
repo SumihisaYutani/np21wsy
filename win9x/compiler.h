@@ -184,7 +184,7 @@ typedef	signed __int64		SINT64;
 #endif
 
 #define	SUPPORT_RESUME
-#define	SUPPORT_STATSAVE	10
+#define	SUPPORT_STATSAVE	200
 #define	SUPPORT_ROMEO
 
 #define SOUND_CRITICAL
@@ -198,7 +198,7 @@ typedef	signed __int64		SINT64;
 #define	SUPPORT_TEXTCNV
 
 #if (_MSC_VER + 0) <= 1600
-// VS2017 ‚æ‚èŒÃ‚¢ê‡
+// VS2017 ï¿½ï¿½ï¿½Ã‚ï¿½ï¿½ê‡
 #define SUPPORT_WIN2000HOST
 #endif
 

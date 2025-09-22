@@ -114,15 +114,19 @@ int statsave_load(const OEMCHAR *filename);
 
 // Extended API for 200-slot functionality
 int statsave_save_ext(int slot, const char *comment);
+#ifdef _WIN32
+int statsave_save_ext_with_hwnd(int slot, const char *comment, HWND hMainWnd);
+#endif
 int statsave_load_ext(int slot);
 int statsave_delete_ext(int slot);
 int statsave_get_info(int slot, NP2SLOT_INFO *info);
 
 // Thumbnail operations
 #ifdef _WIN32
-HBITMAP statsave_create_thumbnail(void);
+HBITMAP statsave_create_thumbnail(HWND hWnd);
 int statsave_save_thumbnail(int slot, HBITMAP hBitmap);
 HBITMAP statsave_load_thumbnail(int slot);
+int statsave_check_slot_exists(int slot);
 #endif
 
 // Slot management

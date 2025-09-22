@@ -3138,43 +3138,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 				winuileave();
 			}
 			if (b) {
-				// Save current window size before closing
-				RECT currect;
-				GetWindowRect(hWnd, &currect);
-				int width = currect.right - currect.left;
-				int height = currect.bottom - currect.top;
-
-				OEMCHAR iniPath[MAX_PATH];
-				OEMCHAR widthStr[16], heightStr[16];
-
-				// Get INI file path from module path
-				GetModuleFileName(NULL, iniPath, NELEMENTS(iniPath));
-				OEMCHAR* lastSlash = _tcsrchr(iniPath, OEMTEXT('\\'));
-				if (lastSlash) {
-					_tcscpy_s(lastSlash + 1, NELEMENTS(iniPath) - (lastSlash + 1 - iniPath), OEMTEXT("np21x64w.ini"));
-				}
-				OEMSPRINTF(widthStr, OEMTEXT("%d"), width);
-				OEMSPRINTF(heightStr, OEMTEXT("%d"), height);
-
-				// Debug output
-				FILE *fp = fopen("debug_direct.log", "a");
-				if (fp) {
-#ifdef UNICODE
-					fprintf(fp, "Saving window size: %dx%d to %ls\n", width, height, iniPath);
-#else
-					fprintf(fp, "Saving window size: %dx%d to %s\n", width, height, iniPath);
-#endif
-					fclose(fp);
-				}
-
-				WritePrivateProfileString(OEMTEXT("Window"), OEMTEXT("Width"), widthStr, iniPath);
-				WritePrivateProfileString(OEMTEXT("Window"), OEMTEXT("Height"), heightStr, iniPath);
-
 				// ������ʃT�C�Y�ɖ߂�
 				np2_multithread_EnterCriticalSection();
 				scrnmng_setsize(0, 0, 640, 400);
 				np2_multithread_LeaveCriticalSection();
 				if (np2oscfg.WINSNAP) {
+					RECT currect;
+					GetWindowRect(hWnd, &currect);
 					winlocex_moving(smwlex, &currect);
 				}
 
@@ -4470,44 +4440,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,
 		fclose(fp);
 	}
 	
-	SetWindowPos(hWnd, NULL, winx, winy, 0, 0, SWP_NOSIZE|SWP_NOZORDER|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
-
-	// Restore saved window size
-	OEMCHAR iniPath[MAX_PATH];
-	OEMCHAR widthStr[16], heightStr[16];
-
-	// Get INI file path from module path
-	GetModuleFileName(NULL, iniPath, NELEMENTS(iniPath));
-	OEMCHAR* lastSlash = _tcsrchr(iniPath, OEMTEXT('\\'));
-	if (lastSlash) {
-		_tcscpy_s(lastSlash + 1, NELEMENTS(iniPath) - (lastSlash + 1 - iniPath), OEMTEXT("np21x64w.ini"));
-	}
-	GetPrivateProfileString(OEMTEXT("Window"), OEMTEXT("Width"), OEMTEXT("0"), widthStr, NELEMENTS(widthStr), iniPath);
-	GetPrivateProfileString(OEMTEXT("Window"), OEMTEXT("Height"), OEMTEXT("0"), heightStr, NELEMENTS(heightStr), iniPath);
-
-	int savedWidth = _tcstol(widthStr, NULL, 10);
-	int savedHeight = _tcstol(heightStr, NULL, 10);
-
-	// Debug output
-	fp = fopen("debug_direct.log", "a");
-	if (fp) {
-#ifdef UNICODE
-		fprintf(fp, "Loading window size: %dx%d from %ls\n", savedWidth, savedHeight, iniPath);
-#else
-		fprintf(fp, "Loading window size: %dx%d from %s\n", savedWidth, savedHeight, iniPath);
-#endif
-		fclose(fp);
-	}
-
-	if (savedWidth > 0 && savedHeight > 0) {
-		// Resize window to saved size
-		SetWindowPos(hWnd, NULL, 0, 0, savedWidth, savedHeight, SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
-		fp = fopen("debug_direct.log", "a");
-		if (fp) {
-			fprintf(fp, "Window resized to: %dx%d\n", savedWidth, savedHeight);
-			fclose(fp);
-		}
-	} // Win10���ŃE�B���h�E�ʒu���������̑΍�
+	SetWindowPos(hWnd, NULL, winx, winy, 0, 0, SWP_NOSIZE|SWP_NOZORDER|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED); // Win10���ŃE�B���h�E�ʒu���������̑΍�
 	
 #ifdef OPENING_WAIT
 	tick = GetTickCount();
@@ -4567,46 +4500,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,
 	if (fp) {
 		fprintf(fp, "DrawMenuBar completed\n");
 		fclose(fp);
-	}
-
-	// Auto-show State Manager window on startup (once per application)
-	static BOOL stateManagerInitialized = FALSE;
-	if (!stateManagerInitialized) {
-		// Re-apply saved window size just before State Manager creation
-		OEMCHAR iniPath2[MAX_PATH];
-		OEMCHAR widthStr2[16], heightStr2[16];
-
-		// Get INI file path from module path
-		GetModuleFileName(NULL, iniPath2, NELEMENTS(iniPath2));
-		OEMCHAR* lastSlash2 = _tcsrchr(iniPath2, OEMTEXT('\\'));
-		if (lastSlash2) {
-			_tcscpy_s(lastSlash2 + 1, NELEMENTS(iniPath2) - (lastSlash2 + 1 - iniPath2), OEMTEXT("np21x64w.ini"));
-		}
-		GetPrivateProfileString(OEMTEXT("Window"), OEMTEXT("Width"), OEMTEXT("0"), widthStr2, NELEMENTS(widthStr2), iniPath2);
-		GetPrivateProfileString(OEMTEXT("Window"), OEMTEXT("Height"), OEMTEXT("0"), heightStr2, NELEMENTS(heightStr2), iniPath2);
-
-		int savedWidth2 = _tcstol(widthStr2, NULL, 10);
-		int savedHeight2 = _tcstol(heightStr2, NULL, 10);
-
-		if (savedWidth2 > 0 && savedHeight2 > 0) {
-			// Final resize to saved size
-			SetWindowPos(hWnd, NULL, 0, 0, savedWidth2, savedHeight2, SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
-			FILE *fp2 = fopen("debug_direct.log", "a");
-			if (fp2) {
-				fprintf(fp2, "Final window resize to: %dx%d\n", savedWidth2, savedHeight2);
-				fclose(fp2);
-			}
-		}
-
-		CStateManagerWnd* pStateManager = CStateManagerWnd::GetInstance();
-		if (!pStateManager) {
-			CStateManagerWnd::CreateInstance();
-			pStateManager = CStateManagerWnd::GetInstance();
-		}
-		if (pStateManager && pStateManager->Create()) {
-			pStateManager->Show(TRUE);
-		}
-		stateManagerInitialized = TRUE;
 	}
 
 	fp = fopen("debug_direct.log", "a");
@@ -4701,30 +4594,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst,
 		if (fp) {
 			fprintf(fp, "DirectDraw initialization completed\n");
 			fclose(fp);
-		}
-
-		// Final window size restoration after all initialization
-		OEMCHAR finalIniPath[MAX_PATH];
-		OEMCHAR finalWidthStr[16], finalHeightStr[16];
-
-		GetModuleFileName(NULL, finalIniPath, NELEMENTS(finalIniPath));
-		OEMCHAR* finalLastSlash = _tcsrchr(finalIniPath, OEMTEXT('\\'));
-		if (finalLastSlash) {
-			_tcscpy_s(finalLastSlash + 1, NELEMENTS(finalIniPath) - (finalLastSlash + 1 - finalIniPath), OEMTEXT("np21x64w.ini"));
-		}
-		GetPrivateProfileString(OEMTEXT("Window"), OEMTEXT("Width"), OEMTEXT("0"), finalWidthStr, NELEMENTS(finalWidthStr), finalIniPath);
-		GetPrivateProfileString(OEMTEXT("Window"), OEMTEXT("Height"), OEMTEXT("0"), finalHeightStr, NELEMENTS(finalHeightStr), finalIniPath);
-
-		int finalSavedWidth = _tcstol(finalWidthStr, NULL, 10);
-		int finalSavedHeight = _tcstol(finalHeightStr, NULL, 10);
-
-		if (finalSavedWidth > 0 && finalSavedHeight > 0) {
-			SetWindowPos(hWnd, NULL, 0, 0, finalSavedWidth, finalSavedHeight, SWP_NOMOVE|SWP_NOZORDER|SWP_NOACTIVATE);
-			FILE *fpFinal = fopen("debug_direct.log", "a");
-			if (fpFinal) {
-				fprintf(fpFinal, "ULTIMATE window resize to: %dx%d\n", finalSavedWidth, finalSavedHeight);
-				fclose(fpFinal);
-			}
 		}
 	}
 	__except(EXCEPTION_EXECUTE_HANDLER) {

@@ -8,7 +8,7 @@
 #include "statemgr.h"
 #include "np2.h"
 #include "pccore.h"
-#include "statsave.h"
+#include "../dosio.h"
 #include <commctrl.h>
 
 // Static instance
@@ -87,9 +87,45 @@ BOOL CStateManagerWnd::Create()
 	}
 
 	TRACEOUT(("StateManager: Creating main window\n"));
+
+	// Calculate position to avoid overlapping with main window
+	int x = CW_USEDEFAULT, y = CW_USEDEFAULT;
+	if (g_hWndMain && ::IsWindow(g_hWndMain)) {
+		RECT rcMain, rcScreen;
+		::GetWindowRect(g_hWndMain, &rcMain);
+
+		// Get screen dimensions
+		rcScreen.left = 0;
+		rcScreen.top = 0;
+		rcScreen.right = GetSystemMetrics(SM_CXSCREEN);
+		rcScreen.bottom = GetSystemMetrics(SM_CYSCREEN);
+
+		// Try to place to the right of main window
+		x = rcMain.right + 10;
+		y = rcMain.top;
+
+		// If it would go off-screen, place to the left
+		if (x + 800 > rcScreen.right) {
+			x = rcMain.left - 800 - 10;
+			// If still off-screen, place at screen edge
+			if (x < 0) {
+				x = rcScreen.right - 800 - 20;
+			}
+		}
+
+		// Ensure the window stays within screen bounds
+		int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+		if (x + 800 > screenWidth) {
+			x = rcMain.left - 810; // Place to the left if not enough space on right
+		}
+		if (x < 0) {
+			x = 50; // Fallback position
+		}
+	}
+
 	if (!CSubWndBase::Create(_T("State Manager"),
 		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-		CW_USEDEFAULT, CW_USEDEFAULT, 800, 600,
+		x, y, 800, 600,
 		g_hWndMain, NULL)) {
 		TRACEOUT(("StateManager: Failed to create main window\n"));
 		return FALSE;
@@ -140,26 +176,32 @@ BOOL CStateManagerWnd::InitializeControls()
 	RECT rc;
 	GetClientRect(&rc);
 
-	// Create toolbar
+	// Create toolbar with improved style
 	m_hToolBar = CreateWindowEx(0, TOOLBARCLASSNAME, NULL,
-		WS_CHILD | WS_VISIBLE | TBSTYLE_FLAT | TBSTYLE_TOOLTIPS,
+		WS_CHILD | WS_VISIBLE | TBSTYLE_TOOLTIPS | TBSTYLE_LIST | CCS_ADJUSTABLE,
 		0, 0, 0, 0, m_hWnd, (HMENU)IDC_STATEMGR_TOOLBAR, CWndProc::GetInstanceHandle(), NULL);
 
 	if (!m_hToolBar) {
 		return FALSE;
 	}
 
-	// Setup toolbar buttons
+	// Set extended toolbar styles for better appearance
+	::SendMessage(m_hToolBar, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_DRAWDDARROWS);
+
+	// Setup toolbar buttons with text
 	TBBUTTON tbButtons[] = {
-		{0, IDM_STATEMGR_SAVE,    TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, (INT_PTR)_T("Save")},
-		{1, IDM_STATEMGR_LOAD,    TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, (INT_PTR)_T("Load")},
-		{2, IDM_STATEMGR_DELETE,  TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, (INT_PTR)_T("Delete")},
-		{0, 0,                    TBSTATE_ENABLED, BTNS_SEP,    {0}, 0, 0},
-		{3, IDM_STATEMGR_REFRESH, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, (INT_PTR)_T("Refresh")},
+		{I_IMAGENONE, IDM_STATEMGR_SAVE,    TBSTATE_ENABLED, BTNS_BUTTON | BTNS_SHOWTEXT, {0}, 0, (INT_PTR)_T("Save")},
+		{I_IMAGENONE, IDM_STATEMGR_LOAD,    TBSTATE_ENABLED, BTNS_BUTTON | BTNS_SHOWTEXT, {0}, 0, (INT_PTR)_T("Load")},
+		{I_IMAGENONE, IDM_STATEMGR_DELETE,  TBSTATE_ENABLED, BTNS_BUTTON | BTNS_SHOWTEXT, {0}, 0, (INT_PTR)_T("Delete")},
+		{0, 0,                              TBSTATE_ENABLED, BTNS_SEP,    {0}, 0, 0},
+		{I_IMAGENONE, IDM_STATEMGR_REFRESH, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_SHOWTEXT, {0}, 0, (INT_PTR)_T("Refresh")},
 	};
 
 	::SendMessage(m_hToolBar, TB_BUTTONSTRUCTSIZE, sizeof(TBBUTTON), 0);
 	::SendMessage(m_hToolBar, TB_ADDBUTTONS, _countof(tbButtons), (LPARAM)tbButtons);
+
+	// Set button size for better text visibility
+	::SendMessage(m_hToolBar, TB_SETBUTTONSIZE, 0, MAKELONG(60, 24));
 	::SendMessage(m_hToolBar, TB_AUTOSIZE, 0, 0);
 
 	// Create list view
@@ -266,9 +308,33 @@ void CStateManagerWnd::AddSlotToList(int slot)
 	HBITMAP hThumbnail;
 	int imageIndex = -1;
 
-	// Get thumbnail
+	// Get thumbnail - try to load actual thumbnail from save file
 	if (IsSlotUsed(slot)) {
 		hThumbnail = statsave_load_thumbnail(slot);
+
+		// If thumbnail loading failed, create a default placeholder
+		if (!hThumbnail) {
+			HDC hDC = GetDC(m_hWnd);
+			HDC hMemDC = CreateCompatibleDC(hDC);
+			hThumbnail = CreateCompatibleBitmap(hDC, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
+			HBITMAP hOldBmp = (HBITMAP)SelectObject(hMemDC, hThumbnail);
+
+			// Fill with gray background
+			HBRUSH hBrush = CreateSolidBrush(RGB(192, 192, 192));
+			RECT rc = {0, 0, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT};
+			FillRect(hMemDC, &rc, hBrush);
+			DeleteObject(hBrush);
+
+			// Draw "No Image" text instead of slot number
+			SetBkMode(hMemDC, TRANSPARENT);
+			SetTextColor(hMemDC, RGB(64, 64, 64));
+			DrawText(hMemDC, _T("No Image"), -1, &rc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+			SelectObject(hMemDC, hOldBmp);
+			DeleteDC(hMemDC);
+			ReleaseDC(m_hWnd, hDC);
+		}
+
 		if (hThumbnail) {
 			imageIndex = ::ImageList_Add(m_hImageList, hThumbnail, NULL);
 			DeleteObject(hThumbnail);
@@ -277,10 +343,7 @@ void CStateManagerWnd::AddSlotToList(int slot)
 
 	// Prepare list item
 	if (IsSlotUsed(slot)) {
-		TCHAR slotTitle[64];
-		MultiByteToWideChar(CP_ACP, 0, m_SlotMaster.slots[slot].title, -1, slotTitle, _countof(slotTitle));
-		_stprintf_s(title, _countof(title), _T("Slot %03d\\n%s"),
-			slot, slotTitle);
+		_stprintf_s(title, _countof(title), _T("Slot %03d\\nUsed"), slot);
 	} else {
 		_stprintf_s(title, _countof(title), _T("Slot %03d\\n[Empty]"), slot);
 	}
@@ -319,10 +382,7 @@ void CStateManagerWnd::UpdateStatusBar()
  */
 BOOL CStateManagerWnd::IsSlotUsed(int slot)
 {
-	if (slot < 0 || slot >= 200) {
-		return FALSE;
-	}
-	return m_SlotMaster.slots[slot].used;
+	return statsave_check_slot_exists(slot) ? TRUE : FALSE;
 }
 
 /**
@@ -431,17 +491,32 @@ LRESULT CStateManagerWnd::WindowProc(UINT nMsg, WPARAM wParam, LPARAM lParam)
  */
 void CStateManagerWnd::OnSlotSave()
 {
+	extern HWND g_hWndMain;
+
 	if (m_nSelectedSlot < 0) {
 		MessageBox(m_hWnd, _T("Please select a slot first."), _T("State Manager"), MB_OK | MB_ICONINFORMATION);
 		return;
 	}
 
-	// Simple save for now - can be enhanced with comment dialog
-	if (statsave_save_ext(m_nSelectedSlot, NULL) == SUCCESS) {
+	int result = statsave_save_ext_with_hwnd(m_nSelectedSlot, NULL, g_hWndMain);
+	if (result == STATFLAG_SUCCESS) {
 		Refresh(); // Update display
-		MessageBox(m_hWnd, _T("State saved successfully."), _T("State Manager"), MB_OK | MB_ICONINFORMATION);
+		TCHAR debugMsg[256];
+		_stprintf_s(debugMsg, _countof(debugMsg), _T("State saved successfully to slot %d\n\nFiles saved to: SaveStates\\"), m_nSelectedSlot);
+		MessageBox(m_hWnd, debugMsg, _T("State Manager"), MB_OK | MB_ICONINFORMATION);
+	} else if (result & STATFLAG_WARNING) {
+		Refresh(); // Update display since save was successful with warnings
+		TCHAR warningMsg[256];
+		_stprintf_s(warningMsg, _countof(warningMsg),
+			_T("State saved with warnings to slot %d.\nWarning code: %d\n\nFiles saved to: SaveStates\\\n\nThis is usually normal."),
+			m_nSelectedSlot, result);
+		MessageBox(m_hWnd, warningMsg, _T("State Manager - Save Warning"), MB_OK | MB_ICONWARNING);
 	} else {
-		MessageBox(m_hWnd, _T("Failed to save state."), _T("State Manager"), MB_OK | MB_ICONERROR);
+		TCHAR errorMsg[256];
+		_stprintf_s(errorMsg, _countof(errorMsg),
+			_T("Failed to save state to slot %d.\nError code: %d\n\nPossible causes:\n- Disk full\n- Permission denied\n- File system error"),
+			m_nSelectedSlot, result);
+		MessageBox(m_hWnd, errorMsg, _T("State Manager - Save Error"), MB_OK | MB_ICONERROR);
 	}
 }
 
@@ -457,10 +532,15 @@ void CStateManagerWnd::OnSlotLoad()
 		return;
 	}
 
-	if (statsave_load_ext(m_nSelectedSlot) == SUCCESS) {
+	int result = statsave_load_ext(m_nSelectedSlot);
+	if (result == STATFLAG_SUCCESS || (result & STATFLAG_WARNING)) {
 		MessageBox(m_hWnd, _T("State loaded successfully."), _T("State Manager"), MB_OK | MB_ICONINFORMATION);
 	} else {
-		MessageBox(m_hWnd, _T("Failed to load state."), _T("State Manager"), MB_OK | MB_ICONERROR);
+		TCHAR errorMsg[256];
+		_stprintf_s(errorMsg, _countof(errorMsg),
+			_T("Failed to load state from slot %d.\nError code: %d\n\nPossible causes:\n- Save file corrupted\n- Version mismatch\n- File access error"),
+			m_nSelectedSlot, result);
+		MessageBox(m_hWnd, errorMsg, _T("State Manager - Load Error"), MB_OK | MB_ICONERROR);
 	}
 }
 
@@ -479,7 +559,7 @@ void CStateManagerWnd::OnSlotDelete()
 	if (MessageBox(m_hWnd, _T("Are you sure you want to delete this state?"),
 		_T("State Manager"), MB_YESNO | MB_ICONQUESTION) == IDYES) {
 
-		if (statsave_delete_ext(m_nSelectedSlot) == SUCCESS) {
+		if (statsave_delete_ext(m_nSelectedSlot) == STATFLAG_SUCCESS) {
 			Refresh(); // Update display
 			MessageBox(m_hWnd, _T("State deleted successfully."), _T("State Manager"), MB_OK | MB_ICONINFORMATION);
 		} else {

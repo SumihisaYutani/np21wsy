@@ -76,9 +76,7 @@ typedef struct {
 
 	UINT8	resume;													// ver0.30
 	UINT8	statsave;
-#if !defined(_WIN64)
 	UINT8	disablemmx;
-#endif
 	UINT8	wintype;
 	UINT8	toolwin;
 	UINT8	keydisp;
@@ -139,8 +137,8 @@ typedef struct {
 	UINT8	multithread; // Multi Thread Mode
 #endif
 
-	UINT8	midiasns; // MIDI Active Sensing‚ğ‘—‚é
-	UINT32	midiaint; // MIDI Active Sensing‚ğ‘—‚éŠÔŠuiƒ~ƒŠ•bj
+	UINT8	midiasns; // MIDI Active Sensingï¿½ğ‘—‚ï¿½
+	UINT32	midiaint; // MIDI Active Sensingï¿½ğ‘—‚ï¿½ÔŠuï¿½iï¿½~ï¿½ï¿½ï¿½bï¿½j
 } NP2OSCFG;
 
 

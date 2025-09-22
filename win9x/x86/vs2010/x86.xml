@@ -95,7 +95,8 @@
       Name="CommandLineTemplate"
       DisplayName="Command Line"
       Visible="False"
-      IncludeInCommandLine="False" />
+      IncludeInCommandLine="False"
+      Default="&quot;C:\Users\yamanaka10\nasm\nasm.exe&quot; -f win32 %(IncludePaths) %(Inputs) %(ObjectFileName)" />
     <DynamicEnumProperty
       Name="NASMBeforeTargets"
       Category="General"

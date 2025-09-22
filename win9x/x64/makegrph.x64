@@ -240,5 +240,4 @@ makegrph:		sub			rsp, byte 40
 				add			rsp, byte 40
 				ret
 
-	ends
 

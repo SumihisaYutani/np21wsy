@@ -501,9 +501,6 @@ void CStateManagerWnd::OnSlotSave()
 	int result = statsave_save_ext_with_hwnd(m_nSelectedSlot, NULL, g_hWndMain);
 	if (result == STATFLAG_SUCCESS) {
 		Refresh(); // Update display
-		TCHAR debugMsg[256];
-		_stprintf_s(debugMsg, _countof(debugMsg), _T("State saved successfully to slot %d\n\nFiles saved to: SaveStates\\"), m_nSelectedSlot);
-		MessageBox(m_hWnd, debugMsg, _T("State Manager"), MB_OK | MB_ICONINFORMATION);
 	} else if (result & STATFLAG_WARNING) {
 		Refresh(); // Update display since save was successful with warnings
 		TCHAR warningMsg[256];
@@ -534,7 +531,7 @@ void CStateManagerWnd::OnSlotLoad()
 
 	int result = statsave_load_ext(m_nSelectedSlot);
 	if (result == STATFLAG_SUCCESS || (result & STATFLAG_WARNING)) {
-		MessageBox(m_hWnd, _T("State loaded successfully."), _T("State Manager"), MB_OK | MB_ICONINFORMATION);
+		// State loaded successfully - no popup needed
 	} else {
 		TCHAR errorMsg[256];
 		_stprintf_s(errorMsg, _countof(errorMsg),

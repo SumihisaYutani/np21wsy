@@ -73,6 +73,44 @@ typedef struct {
     UINT32      checksum;       // Metadata checksum
 } NP2METADATA;
 
+// HDI save flags
+#define HDI_SAVE_HDD            0x00000001  // Save HDD configuration
+#define HDI_SAVE_FDD            0x00000002  // Save FDD configuration
+#define HDI_SAVE_CD             0x00000004  // Save CD configuration
+#define HDI_SAVE_MEMORY         0x00000008  // Save memory configuration
+#define HDI_SAVE_DIP            0x00000010  // Save DIP switches
+#define HDI_SAVE_ALL            0x0000001F  // Save all configuration
+
+/**
+ * @brief HDI-aware save state metadata (extended)
+ */
+typedef struct {
+    UINT32      signature;          // 'HDIM'
+    UINT32      version;            // HDI metadata version
+    UINT64      save_time;          // Save time (FILETIME)
+    UINT32      session_time;       // Session time (seconds)
+    char        game_title[64];     // Game title (auto-detected)
+    char        user_comment[128];  // User comment
+    UINT32      cpu_clock;          // CPU clock frequency
+    UINT32      mem_size;           // Memory size
+    
+    // Full HDI/FDD configuration
+    char        hdd_files[4][MAX_PATH];     // Full HDD file paths
+    char        fdd_files[4][MAX_PATH];     // Full FDD file paths
+    char        cd_files[4][MAX_PATH];      // Full CD file paths
+    UINT8       ide_types[4];               // IDE device types
+    UINT8       fdd_types[4];               // FDD types
+    
+    // Additional configuration
+    UINT32      dip_switches;       // DIP switch settings
+    UINT8       memory_switches[8]; // Memory switch settings
+    UINT32      extended_memory;    // Extended memory size
+    
+    // Save flags
+    UINT32      save_flags;         // HDI_SAVE_* flags
+    UINT32      checksum;           // Metadata checksum
+} NP2METADATA_HDI;
+
 /**
  * @brief Slot information (200 slots)
  */
@@ -111,6 +149,15 @@ void statflag_seterr(STFLAGH sfh, const OEMCHAR *str);
 int statsave_save(const OEMCHAR *filename);
 int statsave_check(const OEMCHAR *filename, OEMCHAR *buf, int size);
 int statsave_load(const OEMCHAR *filename);
+
+// HDI-aware save/load functions
+#ifdef _WIN32
+int statsave_save_hdi_ext(int slot, const char *comment, UINT32 save_flags, HWND hWnd);
+#else
+int statsave_save_hdi_ext(int slot, const char *comment, UINT32 save_flags);
+#endif
+int statsave_load_hdi_ext(int slot);
+int statsave_check_hdi_config(int slot, NP2METADATA_HDI *metadata);
 
 // Extended API for 200-slot functionality
 int statsave_save_ext(int slot, const char *comment);

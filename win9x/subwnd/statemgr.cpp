@@ -9,6 +9,7 @@
 #include "np2.h"
 #include "pccore.h"
 #include "../dosio.h"
+#include "../../statsave.h"
 #include <commctrl.h>
 
 // Static instance
@@ -24,6 +25,7 @@ CStateManagerWnd::CStateManagerWnd()
 	, m_hToolBar(NULL)
 	, m_nSelectedSlot(-1)
 	, m_bInitialized(FALSE)
+	, m_hMainWindow(NULL)
 {
 	ZeroMemory(&m_SlotMaster, sizeof(m_SlotMaster));
 }
@@ -123,6 +125,9 @@ BOOL CStateManagerWnd::Create()
 		}
 	}
 
+	// Store main window handle for thumbnail capture
+	m_hMainWindow = g_hWndMain;
+	
 	if (!CSubWndBase::Create(_T("State Manager"),
 		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
 		x, y, 800, 600,
@@ -431,7 +436,7 @@ LRESULT CStateManagerWnd::WindowProc(UINT nMsg, WPARAM wParam, LPARAM lParam)
 							{
 								LPNMLISTVIEW pnmlv = (LPNMLISTVIEW)lParam;
 								if (pnmlv->uNewState & LVIS_SELECTED) {
-									m_nSelectedSlot = (int)pnmlv->lParam;
+									m_nSelectedSlot = pnmlv->iItem;
 									UpdateStatusBar();
 								}
 							}
@@ -441,7 +446,7 @@ LRESULT CStateManagerWnd::WindowProc(UINT nMsg, WPARAM wParam, LPARAM lParam)
 							{
 								LPNMITEMACTIVATE pnmia = (LPNMITEMACTIVATE)lParam;
 								if (pnmia->iItem >= 0) {
-									OnSlotDoubleClick((int)pnmia->lParam);
+									OnSlotDoubleClick(pnmia->iItem);
 								}
 							}
 							break;
@@ -450,7 +455,7 @@ LRESULT CStateManagerWnd::WindowProc(UINT nMsg, WPARAM wParam, LPARAM lParam)
 							{
 								LPNMITEMACTIVATE pnmia = (LPNMITEMACTIVATE)lParam;
 								if (pnmia->iItem >= 0) {
-									OnContextMenu((int)pnmia->lParam, pnmia->ptAction);
+									OnContextMenu(pnmia->iItem, pnmia->ptAction);
 								}
 							}
 							break;
@@ -491,28 +496,43 @@ LRESULT CStateManagerWnd::WindowProc(UINT nMsg, WPARAM wParam, LPARAM lParam)
  */
 void CStateManagerWnd::OnSlotSave()
 {
-	extern HWND g_hWndMain;
-
-	if (m_nSelectedSlot < 0) {
-		MessageBox(m_hWnd, _T("Please select a slot first."), _T("State Manager"), MB_OK | MB_ICONINFORMATION);
+	if (m_nSelectedSlot < 0 || m_nSelectedSlot >= 200) {
+		TCHAR debugMsg[128];
+		_stprintf_s(debugMsg, _countof(debugMsg), 
+			_T("Invalid slot selected: %d. Please select a valid slot (0-199)."), m_nSelectedSlot);
+		MessageBox(m_hWnd, debugMsg, _T("State Manager - Invalid Slot"), MB_OK | MB_ICONWARNING);
 		return;
 	}
 
-	int result = statsave_save_ext_with_hwnd(m_nSelectedSlot, NULL, g_hWndMain);
+	// Store safe slot value
+	int safeSlot = (m_nSelectedSlot >= 0 && m_nSelectedSlot < 200) ? m_nSelectedSlot : -1;
+	
+	// Always use HDI-aware save - use stored main window handle
+	HWND hMainWnd = m_hMainWindow;
+	if (!hMainWnd || !::IsWindow(hMainWnd)) {
+		// Fallback: find main window by class name
+		hMainWnd = ::FindWindow(_T("NP2"), NULL);
+		if (!hMainWnd || !::IsWindow(hMainWnd)) {
+			// Last resort: use current window
+			hMainWnd = m_hWnd;
+		}
+	}
+	int result = statsave_save_hdi_ext(safeSlot, NULL, HDI_SAVE_ALL, hMainWnd ? hMainWnd : m_hWnd);
+
 	if (result == STATFLAG_SUCCESS) {
 		Refresh(); // Update display
 	} else if (result & STATFLAG_WARNING) {
 		Refresh(); // Update display since save was successful with warnings
 		TCHAR warningMsg[256];
 		_stprintf_s(warningMsg, _countof(warningMsg),
-			_T("State saved with warnings to slot %d.\nWarning code: %d\n\nFiles saved to: SaveStates\\\n\nThis is usually normal."),
-			m_nSelectedSlot, result);
+			_T("HDI-aware state saved with warnings to slot %d.\nWarning code: %d\n\nFiles saved to: SaveStates\\\n\nThis is usually normal."),
+			safeSlot, result);
 		MessageBox(m_hWnd, warningMsg, _T("State Manager - Save Warning"), MB_OK | MB_ICONWARNING);
 	} else {
 		TCHAR errorMsg[256];
 		_stprintf_s(errorMsg, _countof(errorMsg),
 			_T("Failed to save state to slot %d.\nError code: %d\n\nPossible causes:\n- Disk full\n- Permission denied\n- File system error"),
-			m_nSelectedSlot, result);
+			safeSlot, result);
 		MessageBox(m_hWnd, errorMsg, _T("State Manager - Save Error"), MB_OK | MB_ICONERROR);
 	}
 }
@@ -529,7 +549,38 @@ void CStateManagerWnd::OnSlotLoad()
 		return;
 	}
 
-	int result = statsave_load_ext(m_nSelectedSlot);
+	// Check if save file contains HDI metadata
+	NP2METADATA_HDI metadata;
+	int hdiCheck = statsave_check_hdi_config(m_nSelectedSlot, &metadata);
+	int result;
+
+	if (hdiCheck == STATFLAG_SUCCESS || hdiCheck == STATFLAG_WARNING) {
+		// HDI metadata detected - show load options
+		int loadType = MessageBox(m_hWnd, 
+			_T("HDI-aware save file detected!\n\n")
+			_T("YES: Load with disk configuration (Recommended)\n")
+			_T("       Restores original disk setup\n\n")
+			_T("NO:  Load state only\n")
+			_T("       May cause compatibility issues\n\n")
+			_T("CANCEL: Cancel operation"),
+			_T("HDI-Aware Load"), 
+			MB_YESNOCANCEL | MB_ICONQUESTION);
+
+		if (loadType == IDYES) {
+			// HDI-aware load
+			result = statsave_load_hdi_ext(m_nSelectedSlot);
+		} else if (loadType == IDNO) {
+			// Standard load
+			result = statsave_load_ext(m_nSelectedSlot);
+		} else {
+			// Cancel
+			return;
+		}
+	} else {
+		// No HDI metadata - standard load
+		result = statsave_load_ext(m_nSelectedSlot);
+	}
+
 	if (result == STATFLAG_SUCCESS || (result & STATFLAG_WARNING)) {
 		// State loaded successfully - no popup needed
 	} else {
@@ -567,6 +618,15 @@ void CStateManagerWnd::OnSlotDelete()
 
 void CStateManagerWnd::OnSlotDoubleClick(int slot)
 {
+	// Validate slot range
+	if (slot < 0 || slot >= 200) {
+		TCHAR debugMsg[128];
+		_stprintf_s(debugMsg, _countof(debugMsg), 
+			_T("Invalid slot in double-click: %d. Valid range is 0-199."), slot);
+		MessageBox(m_hWnd, debugMsg, _T("State Manager - Invalid Slot"), MB_OK | MB_ICONWARNING);
+		return;
+	}
+	
 	m_nSelectedSlot = slot;
 	if (IsSlotUsed(slot)) {
 		OnSlotLoad();

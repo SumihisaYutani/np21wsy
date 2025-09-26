@@ -2674,3 +2674,329 @@ int statsave_check_slot_exists(int slot)
 
 #endif // _WIN32
 
+// ---- HDI-aware save/load functions implementation ----
+
+/**
+ * @brief Get current HDI configuration from np2cfg
+ */
+static void get_current_hdi_config(NP2METADATA_HDI *hdi_meta)
+{
+	int i;
+	FILETIME ft;
+	
+	// Initialize structure
+	ZeroMemory(hdi_meta, sizeof(NP2METADATA_HDI));
+	
+	// Set signature and version
+	hdi_meta->signature = 0x4D494448; // 'HDIM'
+	hdi_meta->version = 1;
+	
+	// Set save time
+	GetSystemTimeAsFileTime(&ft);
+	hdi_meta->save_time = ((UINT64)ft.dwHighDateTime << 32) | (UINT64)ft.dwLowDateTime;
+	
+	// Set session time (placeholder)
+	hdi_meta->session_time = (UINT32)GetTickCount();
+	
+	// Set system info
+	hdi_meta->cpu_clock = np2cfg.baseclock * np2cfg.multiple;
+	hdi_meta->mem_size = 640 + ((UINT32)np2cfg.EXTMEM << 10); // KB
+	
+	// Copy HDD file paths
+#if defined(SUPPORT_IDEIO)
+	for (i = 0; i < 4; i++) {
+#else
+	for (i = 0; i < 2; i++) {
+#endif
+		file_cpyname(hdi_meta->hdd_files[i], np2cfg.sasihdd[i], MAX_PATH);
+#if defined(SUPPORT_IDEIO)
+		hdi_meta->ide_types[i] = (UINT8)np2cfg.idetype[i];
+#else
+		hdi_meta->ide_types[i] = 0;
+#endif
+	}
+	
+	// Copy FDD file paths
+	for (i = 0; i < 4; i++) {
+		file_cpyname(hdi_meta->fdd_files[i], np2cfg.fddfile[i], MAX_PATH);
+		hdi_meta->fdd_types[i] = 0; // Default FDD type
+	}
+	
+	// Copy CD file paths
+#if defined(SUPPORT_IDEIO)
+	for (i = 0; i < 4; i++) {
+		strncpy(hdi_meta->cd_files[i], np2cfg.idecd[i], MAX_PATH - 1);
+		hdi_meta->cd_files[i][MAX_PATH - 1] = '\0';
+	}
+#endif
+	
+	// Copy system settings
+	hdi_meta->dip_switches = ((UINT32)np2cfg.dipsw[0] << 16) | 
+	                        ((UINT32)np2cfg.dipsw[1] << 8) | 
+	                        (UINT32)np2cfg.dipsw[2];
+	
+	for (i = 0; i < 8; i++) {
+		hdi_meta->memory_switches[i] = np2cfg.memsw[i];
+	}
+	
+#if defined(SUPPORT_LARGE_MEMORY)
+	hdi_meta->extended_memory = (UINT32)np2cfg.EXTMEM;
+#else
+	hdi_meta->extended_memory = (UINT32)np2cfg.EXTMEM;
+#endif
+	
+	// Set save flags (default to all)
+	hdi_meta->save_flags = HDI_SAVE_ALL;
+	
+	// Calculate checksum (simple sum for now)
+	hdi_meta->checksum = 0; // TODO: Implement proper checksum
+}
+
+/**
+ * @brief Save state with HDI configuration
+ */
+#ifdef _WIN32
+int statsave_save_hdi_ext(int slot, const char *comment, UINT32 save_flags, HWND hWnd)
+{
+	// Simple approach: Use existing enhanced save function with thumbnail support
+	// TODO: Add HDI metadata functionality later after verifying basic operation
+	return statsave_save_ext_with_hwnd(slot, comment, hWnd);
+#else
+int statsave_save_hdi_ext(int slot, const char *comment, UINT32 save_flags)
+{
+	// Non-Windows implementation
+	return statsave_save_ext(slot, comment);
+#endif
+	
+	/* Original HDI implementation - temporarily disabled
+	OEMCHAR filename[MAX_PATH];
+	NP2METADATA_HDI hdi_meta;
+	FILEH fh;
+	int ret;
+	
+	// Validate slot range
+	if (slot < 0 || slot >= 200) {
+		return STATFLAG_FAILURE;
+	}
+	
+	// Build filename for slot
+	file_cpyname(filename, OEMTEXT("."), sizeof(filename));
+	file_cutname(filename);
+	file_catname(filename, OEMTEXT("SaveStates"), sizeof(filename));
+	CreateDirectory(filename, NULL);
+	
+	// Create slot filename
+	OEMCHAR slot_file[16];
+	OEMSPRINTF(slot_file, OEMTEXT("state_%03d.s00"), slot);
+	file_catname(filename, slot_file, sizeof(filename));
+	
+	// Perform standard save first
+	ret = statsave_save(filename);
+	if (ret != STATFLAG_SUCCESS && !(ret & STATFLAG_WARNING)) {
+		return ret;
+	}
+	
+	// Get current HDI configuration
+	get_current_hdi_config(&hdi_meta);
+	hdi_meta.save_flags = save_flags;
+	
+	// Add user comment if provided
+	if (comment && strlen(comment) > 0) {
+		milstr_ncpy(hdi_meta.user_comment, comment, sizeof(hdi_meta.user_comment));
+	}
+	
+	// Append HDI metadata to file using Windows API
+#ifdef _WIN32
+	HANDLE hFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (hFile == INVALID_HANDLE_VALUE) {
+		return STATFLAG_FAILURE;
+	}
+	
+	// Seek to end and write HDI metadata
+	SetFilePointer(hFile, 0, NULL, FILE_END);
+	DWORD bytesWritten;
+	if (!WriteFile(hFile, &hdi_meta, sizeof(hdi_meta), &bytesWritten, NULL) || 
+		bytesWritten != sizeof(hdi_meta)) {
+		CloseHandle(hFile);
+		return STATFLAG_FAILURE;
+	}
+	CloseHandle(hFile);
+#else
+	// Non-Windows fallback
+	fh = file_open_c(filename);
+	if (fh == FILEH_INVALID) {
+		return STATFLAG_FAILURE;
+	}
+	file_seek(fh, 0, FSEEK_END);
+	if (file_write(fh, &hdi_meta, sizeof(hdi_meta)) != sizeof(hdi_meta)) {
+		file_close(fh);
+		return STATFLAG_FAILURE;
+	}
+	file_close(fh);
+#endif
+	
+	return ret; // Return original save result
+	*/
+}
+
+/**
+ * @brief Load state with HDI configuration
+ */
+int statsave_load_hdi_ext(int slot)
+{
+	OEMCHAR	filename[MAX_PATH];
+	NP2METADATA_HDI	metadata;
+	int		result;
+	int		i;
+	
+	// Validate slot
+	if (slot < 0 || slot >= 200) {
+		return STATFLAG_FAILURE;
+	}
+	
+	// Build filename
+	milstr_ncpy(filename, OEMTEXT("SaveStates"), NELEMENTS(filename));
+	file_setseparator(filename, NELEMENTS(filename));
+	
+	OEMCHAR slot_file[32];
+	OEMSPRINTF(slot_file, OEMTEXT("state_%03d.s00"), slot);
+	file_catname(filename, slot_file, sizeof(filename));
+	
+	// Check if HDI metadata exists
+	result = statsave_check_hdi_config(slot, &metadata);
+	if (result == STATFLAG_FAILURE) {
+		// No HDI metadata, fallback to normal load
+		return statsave_load(filename);
+	}
+	
+	// Load the normal state first
+	result = statsave_load(filename);
+	if (result != STATFLAG_SUCCESS) {
+		return result;
+	}
+	
+	// Apply HDI configuration if save included HDI data
+	if (metadata.save_flags & HDI_SAVE_HDD) {
+		// Restore HDD configuration
+		for (i = 0; i < 4; i++) {
+			if (metadata.hdd_files[i][0] != '\0') {
+				file_cpyname(np2cfg.sasihdd[i], metadata.hdd_files[i], 
+				           NELEMENTS(np2cfg.sasihdd[i]));
+			}
+		}
+	}
+	
+	if (metadata.save_flags & HDI_SAVE_FDD) {
+		// Restore FDD configuration
+		for (i = 0; i < 4; i++) {
+			if (metadata.fdd_files[i][0] != '\0') {
+				file_cpyname(np2cfg.fddfile[i], metadata.fdd_files[i], 
+				           NELEMENTS(np2cfg.fddfile[i]));
+			}
+		}
+	}
+	
+	if (metadata.save_flags & HDI_SAVE_CD) {
+		// Restore CD configuration
+		for (i = 0; i < 4; i++) {
+			if (i < 4 && metadata.cd_files[i][0] != '\0') {
+				// CD support implementation would go here
+				// Currently not implemented in this version
+			}
+		}
+	}
+	
+#ifdef SUPPORT_IDEIO
+	if (metadata.save_flags & HDI_SAVE_HDD) {
+		// Restore IDE types
+		for (i = 0; i < 4; i++) {
+			np2cfg.idetype[i] = metadata.ide_types[i];
+		}
+	}
+#endif
+	
+	if (metadata.save_flags & HDI_SAVE_DIP) {
+		// Restore DIP switch settings
+		np2cfg.dipsw[0] = (UINT8)((metadata.dip_switches >> 16) & 0xFF);
+		np2cfg.dipsw[1] = (UINT8)((metadata.dip_switches >> 8) & 0xFF);
+		np2cfg.dipsw[2] = (UINT8)(metadata.dip_switches & 0xFF);
+	}
+	
+	if (metadata.save_flags & HDI_SAVE_MEMORY) {
+		// Restore memory switch settings
+		for (i = 0; i < 8; i++) {
+			np2cfg.memsw[i] = metadata.memory_switches[i];
+		}
+		np2cfg.EXTMEM = (UINT16)metadata.extended_memory;
+	}
+	
+	// Return success with potential warning if version mismatch
+	return (result == STATFLAG_WARNING) ? STATFLAG_WARNING : STATFLAG_SUCCESS;
+}
+
+/**
+ * @brief Check HDI configuration in save file
+ */
+int statsave_check_hdi_config(int slot, NP2METADATA_HDI *metadata)
+{
+	OEMCHAR	filename[MAX_PATH];
+	FILEH	fh;
+	FILELEN	size;
+	NP2METADATA_HDI	temp_metadata;
+	
+	// Validate parameters
+	if (slot < 0 || slot >= 200 || !metadata) {
+		return STATFLAG_FAILURE;
+	}
+	
+	// Build filename
+	milstr_ncpy(filename, OEMTEXT("SaveStates"), NELEMENTS(filename));
+	file_setseparator(filename, NELEMENTS(filename));
+	
+	OEMCHAR slot_file[32];
+	OEMSPRINTF(slot_file, OEMTEXT("state_%03d.s00"), slot);
+	file_catname(filename, slot_file, sizeof(filename));
+	
+	// Open file for reading
+	fh = file_open_rb(filename);
+	if (fh == FILEH_INVALID) {
+		return STATFLAG_FAILURE;
+	}
+	
+	// Get file size
+	size = file_getsize(fh);
+	if (size < (FILELEN)sizeof(NP2METADATA_HDI)) {
+		file_close(fh);
+		return STATFLAG_FAILURE;
+	}
+	
+	// Seek to position where HDI metadata should be
+	if (file_seek(fh, size - sizeof(NP2METADATA_HDI), FSEEK_SET) != (size - sizeof(NP2METADATA_HDI))) {
+		file_close(fh);
+		return STATFLAG_FAILURE;
+	}
+	
+	// Read potential HDI metadata
+	if (file_read(fh, &temp_metadata, sizeof(NP2METADATA_HDI)) != sizeof(NP2METADATA_HDI)) {
+		file_close(fh);
+		return STATFLAG_FAILURE;
+	}
+	
+	file_close(fh);
+	
+	// Check signature
+	if (temp_metadata.signature != 0x4D494448) { // 'HDIM'
+		return STATFLAG_FAILURE;
+	}
+	
+	// Check version (support version 1 for now)
+	if (temp_metadata.version != 1) {
+		return STATFLAG_WARNING;
+	}
+	
+	// Copy to output parameter
+	*metadata = temp_metadata;
+	
+	return STATFLAG_SUCCESS;
+}
+

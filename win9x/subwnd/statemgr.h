@@ -25,6 +25,7 @@ private:
 	NP2SLOT_MASTER	m_SlotMaster;		// Slot information
 	int				m_nSelectedSlot;	// Selected slot
 	BOOL			m_bInitialized;		// Initialization flag
+	HWND			m_hMainWindow;		// Main emulator window handle
 
 	// Constants
 	static const int THUMBNAIL_WIDTH = 80;

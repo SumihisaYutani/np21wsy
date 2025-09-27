@@ -431,7 +431,16 @@ LRESULT CStateManagerWnd::WindowProc(UINT nMsg, WPARAM wParam, LPARAM lParam)
 							{
 								LPNMLISTVIEW pnmlv = (LPNMLISTVIEW)lParam;
 								if (pnmlv->uNewState & LVIS_SELECTED) {
-									m_nSelectedSlot = (int)pnmlv->lParam;
+									// Get the actual slot number from the ListView item
+									LVITEM lvi;
+									memset(&lvi, 0, sizeof(lvi));
+									lvi.mask = LVIF_PARAM;
+									lvi.iItem = pnmlv->iItem;
+									if (ListView_GetItem(m_hListView, &lvi)) {
+										m_nSelectedSlot = (int)lvi.lParam;
+									} else {
+										m_nSelectedSlot = pnmlv->iItem; // fallback to item index
+									}
 									UpdateStatusBar();
 								}
 							}
@@ -441,7 +450,16 @@ LRESULT CStateManagerWnd::WindowProc(UINT nMsg, WPARAM wParam, LPARAM lParam)
 							{
 								LPNMITEMACTIVATE pnmia = (LPNMITEMACTIVATE)lParam;
 								if (pnmia->iItem >= 0) {
-									OnSlotDoubleClick((int)pnmia->lParam);
+									// Get the actual slot number from the ListView item
+									LVITEM lvi;
+									memset(&lvi, 0, sizeof(lvi));
+									lvi.mask = LVIF_PARAM;
+									lvi.iItem = pnmia->iItem;
+									int slot = pnmia->iItem; // fallback
+									if (ListView_GetItem(m_hListView, &lvi)) {
+										slot = (int)lvi.lParam;
+									}
+									OnSlotDoubleClick(slot);
 								}
 							}
 							break;
@@ -450,7 +468,16 @@ LRESULT CStateManagerWnd::WindowProc(UINT nMsg, WPARAM wParam, LPARAM lParam)
 							{
 								LPNMITEMACTIVATE pnmia = (LPNMITEMACTIVATE)lParam;
 								if (pnmia->iItem >= 0) {
-									OnContextMenu((int)pnmia->lParam, pnmia->ptAction);
+									// Get the actual slot number from the ListView item
+									LVITEM lvi;
+									memset(&lvi, 0, sizeof(lvi));
+									lvi.mask = LVIF_PARAM;
+									lvi.iItem = pnmia->iItem;
+									int slot = pnmia->iItem; // fallback
+									if (ListView_GetItem(m_hListView, &lvi)) {
+										slot = (int)lvi.lParam;
+									}
+									OnContextMenu(slot, pnmia->ptAction);
 								}
 							}
 							break;

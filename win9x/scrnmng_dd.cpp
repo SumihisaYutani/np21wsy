@@ -40,14 +40,14 @@
 #pragma comment(lib, "dxguid.lib")
 #endif	// !defined(__GNUC__)
 
-//! 8BPP ƒpƒŒƒbƒg”
+//! 8BPP ï¿½pï¿½ï¿½ï¿½bï¿½gï¿½ï¿½
 #define PALLETES_8BPP	NP2PAL_TEXT3
 
 #define FILLSURF_SIZE	32
 
 static int req_enter_criticalsection = 0;
 
-extern bool scrnmng_create_pending; // ƒOƒ‰ƒtƒBƒbƒNƒŒƒ“ƒ_ƒ‰¶¬•Û—¯’†
+extern bool scrnmng_create_pending; // ï¿½Oï¿½ï¿½ï¿½tï¿½Bï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Û—ï¿½ï¿½ï¿½
 extern bool scrnmng_restore_pending;
 
 extern WINLOCEX np2_winlocexallwin(HWND base);
@@ -108,7 +108,7 @@ static void dd_leave_criticalsection(void){
 	LeaveCriticalSection(&dd_cs);
 }
 
-// ƒvƒ‰ƒCƒ}ƒŠƒT[ƒtƒFƒCƒX‚ÌDirectDraw DDBLT_COLORFILL‚Å—áŠO‚ªo‚éŠÂ‹«‚ª‚ ‚é‚æ‚¤‚È‚Ì‚Å‘ã‘Ö
+// ï¿½vï¿½ï¿½ï¿½Cï¿½}ï¿½ï¿½ï¿½Tï¿½[ï¿½tï¿½Fï¿½Cï¿½Xï¿½ï¿½DirectDraw DDBLT_COLORFILLï¿½Å—ï¿½Oï¿½ï¿½ï¿½oï¿½ï¿½Â‹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ‚¤ï¿½È‚Ì‚Å‘ï¿½ï¿½
 #define DDBLT_COLORFILL_FIX
 
 #ifdef DDBLT_COLORFILL_FIX
@@ -146,7 +146,7 @@ static void renewalclientsize(BOOL winloc) {
 
 	extend = 0;
 
-	// •`‰æ”ÍˆÍ`
+	// ï¿½`ï¿½ï¿½ÍˆÍ`
 	if (ddraw.scrnmode & SCRNMODE_FULLSCREEN) {
 		ddraw.rect.right = width;
 		ddraw.rect.bottom = height;
@@ -208,7 +208,7 @@ static void renewalclientsize(BOOL winloc) {
 		ddraw.scrn.right = ddraw.scrn.left + scrnwidth;
 		ddraw.scrn.bottom = ddraw.scrn.top + scrnheight;
 
-		// ƒƒjƒ…[•\¦‚Ì•`‰æ—Ìˆæ
+		// ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½Ì•`ï¿½ï¿½Ìˆï¿½
 		ddraw.rectclip = ddraw.rect;
 		ddraw.scrnclip = ddraw.scrn;
 		if (ddraw.scrnclip.top < ddraw.menusize) {
@@ -555,7 +555,7 @@ BRESULT scrnmngDD_create(UINT8 scrnmode) {
 		if(np2oscfg.mouse_nc){
 			if (np2oscfg.wintype != 0) {
 				WINLOCEX	wlex;
-				// XXX: ƒƒjƒ…[‚ªo‚¹‚È‚­‚È‚Á‚Ä‹l‚Ş‚Ì‚ğ‰ñ”ğib’èj
+				// XXX: ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½È‚ï¿½ï¿½È‚ï¿½ï¿½Ä‹lï¿½Ş‚Ì‚ï¿½ï¿½ï¿½ï¿½ï¿½iï¿½bï¿½ï¿½j
 				np2oscfg.wintype = 0;
 				np2oscfg.wintype = 0;
 				wlex = np2_winlocexallwin(g_hWndMain);
@@ -585,16 +585,16 @@ BRESULT scrnmngDD_create(UINT8 scrnmode) {
 			}
 			strcat(szModulePath, "\\ddraw.dll");
 			if(PathFileExistsA(szModulePath) && !PathIsDirectoryA(szModulePath)){
-				// DXGL‚ªg‚í‚ê‚Ä‚¢‚»‚¤‚È‚Ì‚Å‘f’¼‚ÈƒR[ƒh‚É•ÏX
+				// DXGLï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚Ì‚Å‘fï¿½ï¿½ï¿½ÈƒRï¿½[ï¿½hï¿½É•ÏX
 				SetWindowLong(g_hWndMain, GWL_STYLE, winstyle);
 				SetWindowLong(g_hWndMain, GWL_EXSTYLE, winstyleex);
 			}else{
-				ShowWindow(g_hWndMain, SW_HIDE); // Aero‚ÈŠÂ‹«‚Åƒtƒ‹ƒXƒNƒŠ[ƒ“¨ƒEƒBƒ“ƒhƒE‚Ì‚ÉƒVƒXƒeƒ€ƒAƒCƒRƒ“‚ªÁ‚¦‚é‘Îô‚Ì‚½‚ß‚Ì‚¨‚Ü‚¶‚È‚¢i‚»‚Ì1j
+				ShowWindow(g_hWndMain, SW_HIDE); // Aeroï¿½ÈŠÂ‹ï¿½ï¿½Åƒtï¿½ï¿½ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Eï¿½Bï¿½ï¿½ï¿½hï¿½Eï¿½Ìï¿½ï¿½ÉƒVï¿½Xï¿½eï¿½ï¿½ï¿½Aï¿½Cï¿½Rï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îï¿½Ì‚ï¿½ï¿½ß‚Ì‚ï¿½ï¿½Ü‚ï¿½ï¿½È‚ï¿½ï¿½iï¿½ï¿½ï¿½ï¿½1ï¿½j
 				SetWindowLong(g_hWndMain, GWL_STYLE, winstyle);
 				SetWindowLong(g_hWndMain, GWL_EXSTYLE, winstyleex);
-				ShowWindow(g_hWndMain, SW_SHOWNORMAL); // Aero‚ÈŠÂ‹«‚Å(ryi‚»‚Ì2j
-				ShowWindow(g_hWndMain, SW_HIDE); // Aero‚ÈŠÂ‹«‚Å(ryi‚»‚Ì3j
-				ShowWindow(g_hWndMain, SW_SHOWNORMAL); // Aero‚ÈŠÂ‹«‚Å(ryi‚»‚Ì4j
+				ShowWindow(g_hWndMain, SW_SHOWNORMAL); // Aeroï¿½ÈŠÂ‹ï¿½ï¿½ï¿½(ryï¿½iï¿½ï¿½ï¿½ï¿½2ï¿½j
+				ShowWindow(g_hWndMain, SW_HIDE); // Aeroï¿½ÈŠÂ‹ï¿½ï¿½ï¿½(ryï¿½iï¿½ï¿½ï¿½ï¿½3ï¿½j
+				ShowWindow(g_hWndMain, SW_SHOWNORMAL); // Aeroï¿½ÈŠÂ‹ï¿½ï¿½ï¿½(ryï¿½iï¿½ï¿½ï¿½ï¿½4ï¿½j
 			}
 			SetWindowPlacement(g_hWndMain, &wp);
 		}else{
@@ -616,7 +616,7 @@ BRESULT scrnmngDD_create(UINT8 scrnmode) {
 		}
 	}
 	if ((r = DirectDrawCreate(devlpguid, &ddraw.ddraw1, NULL)) != DD_OK) {
-		// ƒvƒ‰ƒCƒ}ƒŠ‚ÅÄ’§í
+		// ï¿½vï¿½ï¿½ï¿½Cï¿½}ï¿½ï¿½ï¿½ÅÄ’ï¿½ï¿½ï¿½
 		if (DirectDrawCreate(np2oscfg.emuddraw ? (LPGUID)DDCREATE_EMULATIONONLY : NULL, &ddraw.ddraw1, NULL) != DD_OK) {
 			goto scre_err;
 		}
@@ -668,7 +668,7 @@ BRESULT scrnmngDD_create(UINT8 scrnmode) {
 		}
 		if (!((fscrnmod & FSCRNMOD_SAMERES) || np2_multithread_Enabled()))
 		{
-			// ‰ğ‘œ“x•Ï‚¦‚éƒ‚[ƒh‚È‚ç‹A‚é
+			// ï¿½ğ‘œ“xï¿½Ï‚ï¿½ï¿½éƒ‚ï¿½[ï¿½hï¿½È‚ï¿½Aï¿½ï¿½
 			if (ddraw2->SetDisplayMode(width, height, bitcolor, 0, 0) != DD_OK)
 			{
 				width = 640;
@@ -710,7 +710,7 @@ BRESULT scrnmngDD_create(UINT8 scrnmode) {
 				ddsd.dwHeight = (WAB_MAX_HEIGHT > maxy ? maxy : WAB_MAX_HEIGHT);
 			}else{
 				if((np2wab.relay&0x3)!=0 && np2wab.realWidth>=640 && np2wab.realHeight>=400){
-					// ÀƒTƒCƒY‚É
+					// ï¿½ï¿½ï¿½Tï¿½Cï¿½Yï¿½ï¿½
 					ddsd.dwWidth = np2wab.realWidth;
 					ddsd.dwHeight = np2wab.realHeight;
 				}else{
@@ -808,14 +808,14 @@ BRESULT scrnmngDD_create(UINT8 scrnmode) {
 		ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
 #ifdef SUPPORT_WAB
 		if(!np2wabwnd.multiwindow && (np2wab.relay&0x3)!=0 && np2wab.realWidth>=640 && np2wab.realHeight>=400){
-			// ÀƒTƒCƒY‚É
+			// ï¿½ï¿½ï¿½Tï¿½Cï¿½Yï¿½ï¿½
 			width = ddsd.dwWidth = scrnstat.width;//np2wab.realWidth;
 			height = ddsd.dwHeight = scrnstat.height;//np2wab.realHeight;
 			if (scrnmode & SCRNMODE_ROTATE) {
 				ddsd.dwWidth = scrnstat.height;
 				ddsd.dwHeight = scrnstat.width;
 			}
-			ddsd.dwWidth++; // +1‚µ‚È‚¢‚Æ‘Ê–Ú‚ç‚µ‚¢
+			ddsd.dwWidth++; // +1ï¿½ï¿½ï¿½È‚ï¿½ï¿½Æ‘Ê–Ú‚ç‚µï¿½ï¿½
 		}else{
 			if (!(scrnmode & SCRNMODE_ROTATE)) {
 				ddsd.dwWidth = 640 + 1;
@@ -886,11 +886,11 @@ BRESULT scrnmngDD_create(UINT8 scrnmode) {
 	ddraw.width = width;
 	ddraw.height = height;
 	ddraw.cliping = 0;
-	renewalclientsize(TRUE); // XXX: ƒXƒiƒbƒv‰ğœ“™‚ª‹N‚±‚é‚Ì‚Åb’èTRUE
+	renewalclientsize(TRUE); // XXX: ï¿½Xï¿½iï¿½bï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½ï¿½Ì‚Åbï¿½ï¿½TRUE
 	lastscrnmode = scrnmode;
 //	screenupdate = 3;					// update!
 #if defined(SUPPORT_WAB)
-	mt_wabpausedrawing = 0; // MultiThread‘Îô
+	mt_wabpausedrawing = 0; // MultiThreadï¿½Îï¿½
 #endif
 	dd_leave_criticalsection();
 	return(SUCCESS);
@@ -919,7 +919,7 @@ void scrnmngDD_destroy(void) {
 	}
 #if defined(SUPPORT_WAB)
 	if (ddraw.wabsurf) {
-		mt_wabpausedrawing = 1; // MultiThread‘Îô
+		mt_wabpausedrawing = 1; // MultiThreadï¿½Îï¿½
 		while(mt_wabdrawing) 
 			Sleep(10);
 		ddraw.wabsurf->Release();
@@ -1067,7 +1067,7 @@ void scrnmngDD_clearwinui(void) {
 
 void scrnmngDD_setwidth(int posx, int width) {
 	
-	if(scrnstat.multiple < 1) scrnstat.multiple = 8;
+	if(scrnstat.multiple < 1) scrnstat.multiple = 16;
 	scrnstat.width = width;
 	renewalclientsize(TRUE);
 }
@@ -1081,14 +1081,14 @@ void scrnmngDD_setextend(int extend) {
 
 void scrnmngDD_setheight(int posy, int height) {
 	
-	if(scrnstat.multiple < 1) scrnstat.multiple = 8;
+	if(scrnstat.multiple < 1) scrnstat.multiple = 16;
 	scrnstat.height = height;
 	renewalclientsize(TRUE);
 }
 
 void scrnmngDD_setsize(int posx, int posy, int width, int height) {
 	
-	if(scrnstat.multiple < 1) scrnstat.multiple = 8;
+	if(scrnstat.multiple < 1) scrnstat.multiple = 16;
 	scrnstat.width = width;
 	scrnstat.height = height;
 	renewalclientsize(TRUE);
@@ -1421,7 +1421,7 @@ void scrnmngDD_exitsizing(void)
 	InvalidateRect(g_hWndMain, NULL, TRUE);		// ugh
 }
 
-// ƒtƒ‹ƒXƒNƒŠ[ƒ“‰ğ‘œ“x’²®
+// ï¿½tï¿½ï¿½ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ğ‘œ“xï¿½ï¿½ï¿½ï¿½
 void scrnmngDD_updatefsres(void) {
 #ifdef SUPPORT_WAB
 	RECT rect;
@@ -1476,7 +1476,7 @@ void scrnmngDD_updatefsres(void) {
 		}else if(ddraw.width < width || ddraw.height < height){
 			scrnmngDD_destroy();
 			if (scrnmngDD_create(g_scrnmode) != SUCCESS) {
-				if (scrnmngDD_create(g_scrnmode | SCRNMODE_FULLSCREEN) != SUCCESS) { // ƒtƒ‹ƒXƒNƒŠ[ƒ“‚ÅƒŠƒgƒ‰ƒC
+				if (scrnmngDD_create(g_scrnmode | SCRNMODE_FULLSCREEN) != SUCCESS) { // ï¿½tï¿½ï¿½ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Åƒï¿½ï¿½gï¿½ï¿½ï¿½C
 					scrnmng_create_pending = true;
 					//PostQuitMessage(0);
 					dd_leave_criticalsection();
@@ -1493,7 +1493,7 @@ void scrnmngDD_updatefsres(void) {
 #endif
 }
 
-// ƒEƒBƒ“ƒhƒEƒAƒNƒZƒ‰ƒŒ[ƒ^‰æ–Ê“]‘—
+// ï¿½Eï¿½Bï¿½ï¿½ï¿½hï¿½Eï¿½Aï¿½Nï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½ï¿½Ê“]ï¿½ï¿½
 void scrnmngDD_blthdc(HDC hdc) {
 #if defined(SUPPORT_WAB)
 	HRESULT	r;
@@ -1592,7 +1592,7 @@ void scrnmngDD_bltwab() {
 #endif
 }
 
-// •`‰æ—Ìˆæ‚Ì”ÍˆÍ‚ğƒNƒ‰ƒCƒAƒ“ƒgÀ•W‚Åæ“¾
+// ï¿½`ï¿½ï¿½Ìˆï¿½Ì”ÍˆÍ‚ï¿½ï¿½Nï¿½ï¿½ï¿½Cï¿½Aï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Wï¿½Åæ“¾
 void scrnmngDD_getrect(RECT *lpRect) {
 	if (ddraw.scrnmode & SCRNMODE_FULLSCREEN) {
 		if (GetWindowLongPtr(g_hWndMain, NP2GWLP_HMENU)) {

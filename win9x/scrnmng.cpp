@@ -43,8 +43,8 @@ SCRNRESCFG	scrnrescfg = {0};
 
 int d3davailable = 0;
 
-static BOOL scrnmng_cs_initialized = 0; // Screen Manager ƒNƒŠƒeƒBƒJƒ‹ƒZƒNƒVƒ‡ƒ“ ‰Šú‰»Ï‚İƒtƒ‰ƒO
-static CRITICAL_SECTION	scrnmng_cs = {0}; // Screen Manager surflock in/out ƒNƒŠƒeƒBƒJƒ‹ƒZƒNƒVƒ‡ƒ“
+static BOOL scrnmng_cs_initialized = 0; // Screen Manager ï¿½Nï¿½ï¿½ï¿½eï¿½Bï¿½Jï¿½ï¿½ï¿½Zï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï‚İƒtï¿½ï¿½ï¿½O
+static CRITICAL_SECTION	scrnmng_cs = {0}; // Screen Manager surflock in/out ï¿½Nï¿½ï¿½ï¿½eï¿½Bï¿½Jï¿½ï¿½ï¿½Zï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½
 static void scrnmng_cs_Initialize(){
 	if(!scrnmng_cs_initialized){
 		InitializeCriticalSection(&scrnmng_cs);
@@ -71,9 +71,9 @@ void scrnmng_cs_LeaveModeChangeCriticalSection(){
 // ----
 
 UINT8 scrnmng_current_drawtype = DRAWTYPE_INVALID;
-bool scrnmng_create_pending = false; // ƒOƒ‰ƒtƒBƒbƒNƒŒƒ“ƒ_ƒ‰¶¬•Û—¯’†
+bool scrnmng_create_pending = false; // ï¿½Oï¿½ï¿½ï¿½tï¿½Bï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Û—ï¿½ï¿½ï¿½
 bool scrnmng_restore_pending = false;
-static bool scrnmng_changemode_pending = false; // ‰æ–Êƒ‚[ƒh•ÏX•Û—¯’†
+static bool scrnmng_changemode_pending = false; // ï¿½ï¿½Êƒï¿½ï¿½[ï¿½hï¿½ÏXï¿½Û—ï¿½ï¿½ï¿½
 static int scrnmng_changemode_posx = INT_MAX;
 static int scrnmng_changemode_posy = INT_MAX;
 static int scrnmng_changemode_width = INT_MAX;
@@ -84,7 +84,7 @@ static bool scrnmng_changemode_updatefsres = false;
 static DWORD scrnmng_UIthreadID = 0;
 
 /**
- * İ’è
+ * ï¿½İ’ï¿½
  */
 static const PFTBL s_scrnresini[] =
 {
@@ -95,7 +95,7 @@ static const PFTBL s_scrnresini[] =
 };
 
 /**
- * İ’è“Ç‚İ‚İ
+ * ï¿½İ’ï¿½Ç‚İï¿½ï¿½ï¿½
  */
 void scrnres_readini()
 {
@@ -121,7 +121,7 @@ void scrnres_readini_res(int width, int height)
 }
 
 /**
- * İ’è‘‚«‚İ
+ * ï¿½İ’è‘ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 void scrnres_writeini()
 {
@@ -143,7 +143,7 @@ void scrnmng_setwindowsize(HWND hWnd, int width, int height)
 	const int scx = GetSystemMetrics(SM_CXSCREEN);
 	const int scy = GetSystemMetrics(SM_CYSCREEN);
 	
-	// ƒ}ƒ‹ƒ`ƒ‚ƒjƒ^b’è‘Î‰ ver0.86 rev30
+	// ï¿½}ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½jï¿½^ï¿½bï¿½ï¿½Î‰ï¿½ ver0.86 rev30
 	workrc.right = GetSystemMetrics(SM_CXVIRTUALSCREEN);
 	workrc.bottom = GetSystemMetrics(SM_CYVIRTUALSCREEN);
 
@@ -152,7 +152,7 @@ void scrnmng_setwindowsize(HWND hWnd, int width, int height)
 	{
 		RECT rectwindow;
 		int marginX, marginY;
-		winloc_getDWMmargin(hWnd, &marginX, &marginY); // Win10ŠÂ‹«—p‚Ì‘Îô
+		winloc_getDWMmargin(hWnd, &marginX, &marginY); // Win10ï¿½Â‹ï¿½ï¿½pï¿½Ì‘Îï¿½
 		GetWindowRect(hWnd, &rectwindow);
 		RECT rectclient;
 		GetClientRect(hWnd, &rectclient);
@@ -209,8 +209,8 @@ void scrnmng_initialize(void) {
 	scrnstat.width = 640;
 	scrnstat.height = 400;
 	scrnstat.extend = 1;
-	scrnstat.multiple = 8;
-	scrnmng_setwindowsize(g_hWndMain, 640, 400);
+	scrnstat.multiple = 16;
+	scrnmng_setwindowsize(g_hWndMain, (640 * 16) >> 3, (400 * 16) >> 3);
 
 	scrnmng_UIthreadID = GetCurrentThreadId();
 	
@@ -219,7 +219,7 @@ void scrnmng_initialize(void) {
 
 BRESULT scrnmng_create(UINT8 scrnmode) {
 	
-	if(scrnmng_UIthreadID != GetCurrentThreadId()) return 1; // •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Í•s‰Â
+	if(scrnmng_UIthreadID != GetCurrentThreadId()) return 1; // ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Í•sï¿½ï¿½
 
 #ifdef SUPPORT_SCRN_DIRECT3D
 	scrnmng_current_drawtype = np2oscfg.drawtype;
@@ -247,7 +247,7 @@ BRESULT scrnmng_create(UINT8 scrnmode) {
 
 void scrnmng_destroy(void) {
 	
-	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Í•s‰Â
+	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Í•sï¿½ï¿½
 
 #ifdef SUPPORT_SCRN_DIRECT3D
 	if(scrnmng_current_drawtype==DRAWTYPE_DIRECT3D){
@@ -272,7 +272,7 @@ void scrnmng_shutdown(void) {
 
 void scrnmng_querypalette(void) {
 	
-	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Í•s‰Â
+	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Í•sï¿½ï¿½
 
 #ifdef SUPPORT_SCRN_DIRECT3D
 	if(scrnmng_current_drawtype==DRAWTYPE_INVALID) {return;}
@@ -287,7 +287,7 @@ void scrnmng_querypalette(void) {
 
 RGB16 scrnmng_makepal16(RGB32 pal32) {
 	
-	if(scrnmng_UIthreadID != GetCurrentThreadId()) return 0; // •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Í•s‰Â
+	if(scrnmng_UIthreadID != GetCurrentThreadId()) return 0; // ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Í•sï¿½ï¿½
 
 #ifdef SUPPORT_SCRN_DIRECT3D
 	if(scrnmng_current_drawtype==DRAWTYPE_INVALID) {return 0;}
@@ -302,7 +302,7 @@ RGB16 scrnmng_makepal16(RGB32 pal32) {
 
 void scrnmng_fullscrnmenu(int y) {
 	
-	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Í•s‰Â
+	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Í•sï¿½ï¿½
 
 #ifdef SUPPORT_SCRN_DIRECT3D
 	if(scrnmng_current_drawtype==DRAWTYPE_INVALID) {return;}
@@ -319,7 +319,7 @@ void scrnmng_fullscrnmenu(int y) {
 
 void scrnmng_topwinui(void) {
 	
-	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Í•s‰Â
+	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Í•sï¿½ï¿½
 
 #ifdef SUPPORT_SCRN_DIRECT3D
 	if(scrnmng_current_drawtype==DRAWTYPE_INVALID) {return;}
@@ -336,7 +336,7 @@ void scrnmng_topwinui(void) {
 
 void scrnmng_clearwinui(void) {
 	
-	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Í•s‰Â
+	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Í•sï¿½ï¿½
 
 #ifdef SUPPORT_SCRN_DIRECT3D
 	if(scrnmng_current_drawtype==DRAWTYPE_INVALID) {return;}
@@ -354,7 +354,7 @@ void scrnmng_clearwinui(void) {
 void scrnmng_setwidth(int posx, int width) {
 	
 	if(scrnmng_UIthreadID != GetCurrentThreadId()){
-		// •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Ìê‡A’x‰„•ÏX
+		// ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Ìê‡ï¿½Aï¿½xï¿½ï¿½ï¿½ÏX
 		scrnmng_cs_EnterModeChangeCriticalSection();
 		scrnmng_changemode_posx = posx;
 		scrnmng_changemode_width = width;
@@ -383,7 +383,7 @@ void scrnmng_setwidth(int posx, int width) {
 void scrnmng_setextend(int extend) {
 	
 	if(scrnmng_UIthreadID != GetCurrentThreadId()){
-		// •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Ìê‡A’x‰„•ÏX
+		// ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Ìê‡ï¿½Aï¿½xï¿½ï¿½ï¿½ÏX
 		scrnmng_cs_EnterModeChangeCriticalSection();
 		scrnmng_changemode_extend = extend;
 		scrnmng_changemode_pending = true;
@@ -406,7 +406,7 @@ void scrnmng_setextend(int extend) {
 void scrnmng_setheight(int posy, int height) {
 	
 	if(scrnmng_UIthreadID != GetCurrentThreadId()){
-		// •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Ìê‡A’x‰„•ÏX
+		// ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Ìê‡ï¿½Aï¿½xï¿½ï¿½ï¿½ÏX
 		scrnmng_cs_EnterModeChangeCriticalSection();
 		scrnmng_changemode_posy = posy;
 		scrnmng_changemode_height = height;
@@ -435,7 +435,7 @@ void scrnmng_setheight(int posy, int height) {
 void scrnmng_setsize(int posx, int posy, int width, int height) {
 	
 	if(scrnmng_UIthreadID != GetCurrentThreadId()){
-		// •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Ìê‡A’x‰„•ÏX
+		// ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Ìê‡ï¿½Aï¿½xï¿½ï¿½ï¿½ÏX
 		scrnmng_cs_EnterModeChangeCriticalSection();
 		scrnmng_changemode_posx = posx;
 		scrnmng_changemode_posy = posy;
@@ -464,7 +464,7 @@ void scrnmng_setsize(int posx, int posy, int width, int height) {
 }
 
 const SCRNSURF *scrnmng_surflock(void) {
-	if (scrnmng_changemode_pending) return NULL; // ì¬‘Ò‚¿‚È‚çƒƒbƒN¸”s‚Æ‚·‚é
+	if (scrnmng_changemode_pending) return NULL; // ï¿½ì¬ï¿½Ò‚ï¿½ï¿½È‚çƒï¿½bï¿½Nï¿½ï¿½ï¿½sï¿½Æ‚ï¿½ï¿½ï¿½
 	
 #ifdef SUPPORT_SCRN_DIRECT3D
 	if(scrnmng_current_drawtype==DRAWTYPE_INVALID) {return NULL;}
@@ -508,14 +508,14 @@ void scrnmng_update(void) {
 void scrnmng_setmultiple(int multiple)
 {
 	if(scrnmng_UIthreadID != GetCurrentThreadId()){
-		// •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Ìê‡A’x‰„•ÏX
+		// ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Ìê‡ï¿½Aï¿½xï¿½ï¿½ï¿½ÏX
 		scrnmng_cs_EnterModeChangeCriticalSection();
 		scrnmng_changemode_multiple = multiple;
 		scrnmng_changemode_pending = true;
 		scrnmng_cs_LeaveModeChangeCriticalSection();
 		return;
 	}
-	if(multiple < 1) multiple = 8;
+	if(multiple < 1) multiple = 16;
 	if(np2oscfg.fsrescfg && scrnrescfg.scrn_mul!=multiple){
 		scrnrescfg.hasfscfg = 1;
 		scrnrescfg.fscrnmod = np2oscfg.fscrnmod;
@@ -560,7 +560,7 @@ int scrnmng_getmultiple(void)
 #if defined(SUPPORT_DCLOCK)
 BOOL scrnmng_isdispclockclick(const POINT *pt) {
 	
-	if(scrnmng_UIthreadID != GetCurrentThreadId()) return FALSE; // •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Í•s‰Â
+	if(scrnmng_UIthreadID != GetCurrentThreadId()) return FALSE; // ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Í•sï¿½ï¿½
 
 #ifdef SUPPORT_SCRN_DIRECT3D
 	if(scrnmng_current_drawtype==DRAWTYPE_INVALID) {return FALSE;}
@@ -575,7 +575,7 @@ BOOL scrnmng_isdispclockclick(const POINT *pt) {
 
 void scrnmng_dispclock(void)
 {
-	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Í•s‰Â
+	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Í•sï¿½ï¿½
 
 #ifdef SUPPORT_SCRN_DIRECT3D
 	if(scrnmng_current_drawtype==DRAWTYPE_INVALID) {return;}
@@ -594,7 +594,7 @@ void scrnmng_dispclock(void)
 
 void scrnmng_entersizing(void) {
 	
-	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Í•s‰Â
+	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Í•sï¿½ï¿½
 
 #ifdef SUPPORT_SCRN_DIRECT3D
 	if(scrnmng_current_drawtype==DRAWTYPE_DIRECT3D){
@@ -610,7 +610,7 @@ void scrnmng_entersizing(void) {
 
 void scrnmng_sizing(UINT side, RECT *rect) {
 	
-	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Í•s‰Â
+	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Í•sï¿½ï¿½
 
 #ifdef SUPPORT_SCRN_DIRECT3D
 	if(scrnmng_current_drawtype==DRAWTYPE_DIRECT3D){
@@ -626,7 +626,7 @@ void scrnmng_sizing(UINT side, RECT *rect) {
 
 void scrnmng_exitsizing(void)
 {
-	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Í•s‰Â
+	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Í•sï¿½ï¿½
 
 #ifdef SUPPORT_SCRN_DIRECT3D
 	if(scrnmng_current_drawtype==DRAWTYPE_DIRECT3D){
@@ -640,10 +640,10 @@ void scrnmng_exitsizing(void)
 	}
 }
 
-// ƒtƒ‹ƒXƒNƒŠ[ƒ“‰ğ‘œ“x’²®
+// ï¿½tï¿½ï¿½ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ğ‘œ“xï¿½ï¿½ï¿½ï¿½
 void scrnmng_updatefsres(void) {
 	if(scrnmng_UIthreadID != GetCurrentThreadId()){
-		// •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Ìê‡A’x‰„•ÏX
+		// ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Ìê‡ï¿½Aï¿½xï¿½ï¿½ï¿½ÏX
 		scrnmng_cs_EnterModeChangeCriticalSection();
 		scrnmng_changemode_updatefsres = true;
 		scrnmng_changemode_pending = true;
@@ -662,9 +662,9 @@ void scrnmng_updatefsres(void) {
 	}
 }
 
-// ƒEƒBƒ“ƒhƒEƒAƒNƒZƒ‰ƒŒ[ƒ^‰æ–Ê“]‘—
+// ï¿½Eï¿½Bï¿½ï¿½ï¿½hï¿½Eï¿½Aï¿½Nï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½ï¿½Ê“]ï¿½ï¿½
 void scrnmng_blthdc(HDC hdc) {
-	if (scrnmng_changemode_pending) return; // ì¬‘Ò‚¿‚È‚ç“]‘—‚µ‚È‚¢
+	if (scrnmng_changemode_pending) return; // ï¿½ì¬ï¿½Ò‚ï¿½ï¿½È‚ï¿½]ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
 
 #ifdef SUPPORT_SCRN_DIRECT3D
 	if(scrnmng_current_drawtype==DRAWTYPE_DIRECT3D){
@@ -687,7 +687,7 @@ void scrnmng_bltwab() {
 }
 
 void scrnmng_getrect(RECT *lpRect){
-	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Í•s‰Â
+	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Í•sï¿½ï¿½
 
 #ifdef SUPPORT_SCRN_DIRECT3D
 	if(scrnmng_current_drawtype==DRAWTYPE_DIRECT3D){
@@ -700,7 +700,7 @@ void scrnmng_getrect(RECT *lpRect){
 }
 
 void scrnmng_delaychangemode(void){
-	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // •Ê‚ÌƒXƒŒƒbƒh‚©‚ç‚ÌƒAƒNƒZƒX‚Í•s‰Â
+	if(scrnmng_UIthreadID != GetCurrentThreadId()) return; // ï¿½Ê‚ÌƒXï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Í•sï¿½ï¿½
 	
 	if(scrnmng_changemode_pending){
 		DWORD oldThreadID;

@@ -73,6 +73,94 @@
 #include	"i386hax/haxcore.h"
 #endif
 
+// Helper function for SaveStates directory path generation
+#ifdef _WIN32
+/**
+ * @brief Generate SaveStates directory path based on executable location
+ */
+static void generate_savestates_base_path(OEMCHAR *path, int path_size)
+{
+	OEMCHAR exePath[MAX_PATH];
+	GetModuleFileName(NULL, exePath, MAX_PATH);
+	file_cpyname(path, exePath, path_size);
+	file_cutname(path);
+	file_catname(path, OEMTEXT("SaveStates"), path_size);
+	CreateDirectory(path, NULL);
+}
+
+/**
+ * @brief Write log message to log file
+ */
+static void write_log(const char *message)
+{
+	static int log_initialized = 0;
+	static OEMCHAR log_path[MAX_PATH];
+	FILEH fh;
+	SYSTEMTIME st;
+	char timestamp[64];
+	char full_message[512];
+	
+	// Initialize log path once
+	if (!log_initialized) {
+		OEMCHAR exePath[MAX_PATH];
+		GetModuleFileName(NULL, exePath, MAX_PATH);
+		file_cpyname(log_path, exePath, sizeof(log_path));
+		file_cutname(log_path);
+		file_catname(log_path, OEMTEXT("log"), sizeof(log_path));
+		CreateDirectory(log_path, NULL);
+		file_catname(log_path, OEMTEXT("\\statsave.log"), sizeof(log_path));
+		log_initialized = 1;
+	}
+	
+	// Get current time
+	GetLocalTime(&st);
+	sprintf_s(timestamp, sizeof(timestamp), "[%04d-%02d-%02d %02d:%02d:%02d] ",
+		st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+	
+	// Create full message with timestamp
+	sprintf_s(full_message, sizeof(full_message), "%s%s\r\n", timestamp, message);
+	
+	// Write to log file
+	fh = file_open(log_path);
+	if (fh == FILEH_INVALID) {
+		fh = file_create(log_path);
+	} else {
+		file_seek(fh, 0, FSEEK_END);
+	}
+	
+	if (fh != FILEH_INVALID) {
+		file_write(fh, full_message, strlen(full_message));
+		file_close(fh);
+	}
+}
+
+/**
+ * @brief Log formatted message
+ */
+static void log_printf(const char *format, ...)
+{
+	char buffer[256];
+	va_list args;
+	
+	va_start(args, format);
+	vsnprintf(buffer, sizeof(buffer), format, args);
+	va_end(args);
+	
+	write_log(buffer);
+}
+#else
+/**
+ * @brief Generate SaveStates directory path (non-Windows fallback)
+ */
+static void generate_savestates_base_path(OEMCHAR *path, int path_size)
+{
+	file_cpyname(path, OEMTEXT("."), path_size);
+	file_cutname(path);
+	file_catname(path, OEMTEXT("SaveStates"), path_size);
+	file_dircreate(path);
+}
+#endif
+
 #ifdef USE_MAME
 UINT8 YMF262Read(void *chip, INT a);
 INT YMF262Write(void *chip, INT a, INT v);
@@ -468,30 +556,9 @@ static int statflag_checkpath(STFLAGH sfh, const OEMCHAR *dvname) {
 
 	int			ret;
 	STATPATH	sp;
-	FILEH		fh;
-	OEMCHAR		buf[256];
-	DOSDATE		dosdate;
-	DOSTIME		dostime;
 
 	ret = statflag_read(sfh, &sp, sizeof(sp));
-	if (sp.path[0]) {
-		fh = file_open_rb(sp.path);
-		if (fh != FILEH_INVALID) {
-			file_getdatetime(fh, &dosdate, &dostime);
-			file_close(fh);
-			if ((memcmp(&sp.date, &dosdate, sizeof(dosdate))) ||
-				(memcmp(&sp.time, &dostime, sizeof(dostime)))) {
-				ret |= STATFLAG_DISKCHG;
-				OEMSPRINTF(buf, str_updated, dvname);
-				statflag_seterr(sfh, buf);
-			}
-		}
-		else {
-			ret |= STATFLAG_DISKCHG;
-			OEMSPRINTF(buf, str_notfound, dvname);
-			statflag_seterr(sfh, buf);
-		}
-	}
+	// Disk change checking removed - always return success without checking timestamps
 	return(ret);
 }
 
@@ -1989,10 +2056,7 @@ static int slot_master_load(void)
 	}
 
 	// Build path to slots master file using new directory structure
-	file_cpyname(path, OEMTEXT("."), sizeof(path));
-	file_cutname(path);
-	file_catname(path, OEMTEXT("SaveStates"), sizeof(path));
-	CreateDirectory(path, NULL);
+	generate_savestates_base_path(path, sizeof(path));
 	file_catname(path, OEMTEXT("\\np2.slots"), sizeof(path));
 
 	fh = file_open_rb(path);
@@ -2024,6 +2088,15 @@ static int slot_master_load(void)
 }
 
 /**
+ * @brief Force reload slot master file (clears cache)
+ */
+int slot_master_reload(void)
+{
+	g_slot_master_loaded = FALSE;
+	return slot_master_load();
+}
+
+/**
  * @brief Save slot master file
  */
 static int slot_master_save(void)
@@ -2032,10 +2105,7 @@ static int slot_master_save(void)
 	OEMCHAR path[MAX_PATH];
 
 	// Build path to slots master file using new directory structure
-	file_cpyname(path, OEMTEXT("."), sizeof(path));
-	file_cutname(path);
-	file_catname(path, OEMTEXT("SaveStates"), sizeof(path));
-	CreateDirectory(path, NULL);
+	generate_savestates_base_path(path, sizeof(path));
 	file_catname(path, OEMTEXT("\\np2.slots"), sizeof(path));
 
 	fh = file_create(path);
@@ -2090,10 +2160,7 @@ int statsave_save_ext(int slot, const char *comment)
 	{
 		OEMCHAR ext[8];
 		OEMSPRINTF(ext, OEMTEXT("S%03d"), slot);
-		file_cpyname(filename, OEMTEXT("."), sizeof(filename));
-		file_cutname(filename);
-		file_catname(filename, OEMTEXT("SaveStates"), sizeof(filename));
-		CreateDirectory(filename, NULL);
+		generate_savestates_base_path(filename, sizeof(filename));
 		file_catname(filename, OEMTEXT("\\NP2."), sizeof(filename));
 		file_catname(filename, ext, sizeof(filename));
 	}
@@ -2166,10 +2233,7 @@ int statsave_save_ext_with_hwnd(int slot, const char *comment, HWND hMainWnd)
 	{
 		OEMCHAR ext[8];
 		OEMSPRINTF(ext, OEMTEXT("S%03d"), slot);
-		file_cpyname(filename, OEMTEXT("."), sizeof(filename));
-		file_cutname(filename);
-		file_catname(filename, OEMTEXT("SaveStates"), sizeof(filename));
-		CreateDirectory(filename, NULL);
+		generate_savestates_base_path(filename, sizeof(filename));
 		file_catname(filename, OEMTEXT("\\NP2."), sizeof(filename));
 		file_catname(filename, ext, sizeof(filename));
 	}
@@ -2244,10 +2308,7 @@ int statsave_load_ext(int slot)
 	{
 		OEMCHAR ext[8];
 		OEMSPRINTF(ext, OEMTEXT("S%03d"), slot);
-		file_cpyname(filename, OEMTEXT("."), sizeof(filename));
-		file_cutname(filename);
-		file_catname(filename, OEMTEXT("SaveStates"), sizeof(filename));
-		CreateDirectory(filename, NULL);
+		generate_savestates_base_path(filename, sizeof(filename));
 		file_catname(filename, OEMTEXT("\\NP2."), sizeof(filename));
 		file_catname(filename, ext, sizeof(filename));
 	}
@@ -2281,10 +2342,7 @@ int statsave_delete_ext(int slot)
 	{
 		OEMCHAR ext[8];
 		OEMSPRINTF(ext, OEMTEXT("S%03d"), slot);
-		file_cpyname(filename, OEMTEXT("."), sizeof(filename));
-		file_cutname(filename);
-		file_catname(filename, OEMTEXT("SaveStates"), sizeof(filename));
-		CreateDirectory(filename, NULL);
+		generate_savestates_base_path(filename, sizeof(filename));
 		file_catname(filename, OEMTEXT("\\NP2."), sizeof(filename));
 		file_catname(filename, ext, sizeof(filename));
 	}
@@ -2297,9 +2355,7 @@ int statsave_delete_ext(int slot)
 		OEMCHAR thumbnailPath[MAX_PATH];
 		OEMCHAR ext[8];
 		OEMSPRINTF(ext, OEMTEXT("S%03d"), slot);
-		file_cpyname(thumbnailPath, OEMTEXT("."), sizeof(thumbnailPath));
-		file_cutname(thumbnailPath);
-		file_catname(thumbnailPath, OEMTEXT("SaveStates"), sizeof(thumbnailPath));
+		generate_savestates_base_path(thumbnailPath, sizeof(thumbnailPath));
 		file_catname(thumbnailPath, OEMTEXT("\\Thumb_"), sizeof(thumbnailPath));
 		file_catname(thumbnailPath, ext, sizeof(thumbnailPath));
 		file_catname(thumbnailPath, OEMTEXT(".bmp"), sizeof(thumbnailPath));
@@ -2371,7 +2427,7 @@ int statsave_get_used_slots(int *slots, int max_count)
 }
 
 /**
- * @brief Get slot master
+ * @brief Get slot master (always reloads to get latest data)
  */
 int statsave_get_slot_master(NP2SLOT_MASTER *master)
 {
@@ -2379,13 +2435,14 @@ int statsave_get_slot_master(NP2SLOT_MASTER *master)
 		return STATFLAG_FAILURE;
 	}
 
-	if (slot_master_load() != SUCCESS) {
+	if (slot_master_reload() != SUCCESS) {
 		return STATFLAG_FAILURE;
 	}
 
 	*master = g_slot_master;
 	return SUCCESS;
 }
+
 
 #ifdef _WIN32
 // ---- Windows-specific thumbnail implementation
@@ -2459,7 +2516,9 @@ int statsave_save_thumbnail(int slot, HBITMAP hBitmap)
 	UINT8 *bits;
 	DWORD bytesWritten;
 
+	log_printf("statsave_save_thumbnail: Saving thumbnail for slot %d", slot);
 	if (slot_validate_range(slot) != STATFLAG_SUCCESS || !hBitmap) {
+		log_printf("statsave_save_thumbnail: Invalid slot %d or null bitmap", slot);
 		return STATFLAG_FAILURE;
 	}
 
@@ -2467,10 +2526,7 @@ int statsave_save_thumbnail(int slot, HBITMAP hBitmap)
 	{
 		OEMCHAR ext[8];
 		OEMSPRINTF(ext, OEMTEXT("S%03d"), slot);
-		file_cpyname(filename, OEMTEXT("."), sizeof(filename));
-		file_cutname(filename);
-		file_catname(filename, OEMTEXT("SaveStates"), sizeof(filename));
-		CreateDirectory(filename, NULL);
+		generate_savestates_base_path(filename, sizeof(filename));
 		file_catname(filename, OEMTEXT("\\Thumb_"), sizeof(filename));
 		file_catname(filename, ext, sizeof(filename));
 		file_catname(filename, OEMTEXT(".bmp"), sizeof(filename));
@@ -2572,10 +2628,7 @@ HBITMAP statsave_load_thumbnail(int slot)
 	{
 		OEMCHAR ext[8];
 		OEMSPRINTF(ext, OEMTEXT("S%03d"), slot);
-		file_cpyname(filename, OEMTEXT("."), sizeof(filename));
-		file_cutname(filename);
-		file_catname(filename, OEMTEXT("SaveStates"), sizeof(filename));
-		CreateDirectory(filename, NULL);
+		generate_savestates_base_path(filename, sizeof(filename));
 		file_catname(filename, OEMTEXT("\\Thumb_"), sizeof(filename));
 		file_catname(filename, ext, sizeof(filename));
 		file_catname(filename, OEMTEXT(".bmp"), sizeof(filename));
@@ -2660,16 +2713,16 @@ int statsave_check_slot_exists(int slot)
 	{
 		OEMCHAR ext[8];
 		OEMSPRINTF(ext, OEMTEXT("S%03d"), slot);
-		file_cpyname(filename, OEMTEXT("."), sizeof(filename));
-		file_cutname(filename);
-		file_catname(filename, OEMTEXT("SaveStates"), sizeof(filename));
-		CreateDirectory(filename, NULL);
+		generate_savestates_base_path(filename, sizeof(filename));
 		file_catname(filename, OEMTEXT("\\NP2."), sizeof(filename));
 		file_catname(filename, ext, sizeof(filename));
 	}
 
 	// Check if file exists
-	return (file_attr_c(filename) != -1) ? 1 : 0;
+	log_printf("StatsaveCheck: Checking slot %d file: %s", slot, filename);
+	int result = (file_attr_c(filename) != -1) ? 1 : 0;
+	log_printf("StatsaveCheck: Slot %d exists: %d", slot, result);
+	return result;
 }
 
 #endif // _WIN32

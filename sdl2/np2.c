@@ -78,13 +78,9 @@ static int flagload(const char *ext, const char *title, BOOL force) {
 	getstatfilename(path, ext, sizeof(path));
 	id = DID_YES;
 	ret = statsave_check(path, buf, sizeof(buf));
-	if (ret & (~STATFLAG_DISKCHG)) {
+	if (ret != STATFLAG_SUCCESS) {
 		menumbox("Couldn't restart", title, MBOX_OK | MBOX_ICONSTOP);
 		id = DID_NO;
-	}
-	else if ((!force) && (ret & STATFLAG_DISKCHG)) {
-		SPRINTF(buf2, "Conflict!\n\n%s\nContinue?", buf);
-		id = menumbox(buf2, title, MBOX_YESNOCAN | MBOX_ICONQUESTION);
 	}
 	if (id == DID_YES) {
 		statsave_load(path);

@@ -785,17 +785,11 @@ static int flagload(HWND hWnd, const OEMCHAR *ext, LPCTSTR title, BOOL force)
 	winuienter();
 	nID = IDYES;
 	nRet = statsave_check(szPath, szStat, NELEMENTS(szStat));
-	if (nRet & (~STATFLAG_DISKCHG))
+	if (nRet != STATFLAG_SUCCESS)
 	{
 		messagebox(hWnd, MAKEINTRESOURCE(IDS_ERROR_RESUME),
 													MB_OK | MB_ICONSTOP);
 		nID = IDNO;
-	}
-	else if ((!force) && (nRet & STATFLAG_DISKCHG))
-	{
-		std::tstring rFormat(LoadTString(IDS_CONFIRM_RESUME));
-		wsprintf(szMessage, rFormat.c_str(), szStat);
-		nID = messagebox(hWnd, szMessage, MB_YESNOCANCEL | MB_ICONQUESTION);
 	}
 	if (nID == IDYES)
 	{

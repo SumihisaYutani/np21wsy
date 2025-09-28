@@ -209,16 +209,10 @@ flagload(const char* ext, const char* title, BOOL force)
 
 	getstatfilename(path, ext, sizeof(path));
 	ret = statsave_check(path, buf, sizeof(buf));
-	if (ret & (~STATFLAG_DISKCHG)) {
+	if (ret != STATFLAG_SUCCESS) {
 		toolkit_msgbox(title, "Couldn't restart",
 		    TK_MB_OK|TK_MB_ICON_ERROR);
 		rv = 1;
-	} else if ((!force) && (ret & STATFLAG_DISKCHG)) {
-		ret = toolkit_msgbox(title, "Conflict!\nContinue?",
-		    TK_MB_YESNO|TK_MB_ICON_QUESTION);
-		if (ret != TK_MB_YES) {
-			rv = 1;
-		}
 	}
 	if (rv == 0) {
 		statsave_load(path);

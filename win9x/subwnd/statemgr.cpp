@@ -262,8 +262,11 @@ void CStateManagerWnd::Refresh()
 		return;
 	}
 
+	// Force reload of slot master data to ensure we have latest state
+	slot_master_reload();
+	
 	// Load slot master data
-	if (statsave_get_slot_master(&m_SlotMaster) != SUCCESS) {
+	if (statsave_get_slot_master(&m_SlotMaster) != STATFLAG_SUCCESS) {
 		// Initialize empty master if load fails
 		ZeroMemory(&m_SlotMaster, sizeof(m_SlotMaster));
 		m_SlotMaster.signature = 0x544F4C53; // 'SLOT'
@@ -382,7 +385,12 @@ void CStateManagerWnd::UpdateStatusBar()
  */
 BOOL CStateManagerWnd::IsSlotUsed(int slot)
 {
-	return statsave_check_slot_exists(slot) ? TRUE : FALSE;
+	// Get slot info from the slot master instead of file existence check
+	NP2SLOT_INFO info;
+	if (statsave_get_info(slot, &info) == STATFLAG_SUCCESS) {
+		return info.used ? TRUE : FALSE;
+	}
+	return FALSE;
 }
 
 /**

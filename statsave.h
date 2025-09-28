@@ -11,7 +11,6 @@
 enum
 {
 	STATFLAG_SUCCESS	= 0,
-	STATFLAG_DISKCHG	= 0x0001,
 	STATFLAG_VERCHG		= 0x0002,
 	STATFLAG_WARNING	= 0x0080,
 	STATFLAG_VERSION	= 0x0100,
@@ -133,6 +132,7 @@ int statsave_check_slot_exists(int slot);
 int statsave_get_slot_count(void);
 int statsave_get_used_slots(int *slots, int max_count);
 int statsave_get_slot_master(NP2SLOT_MASTER *master);
+int slot_master_reload(void);
 
 #ifdef __cplusplus
 }

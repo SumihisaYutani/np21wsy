@@ -2191,6 +2191,7 @@ int statsave_save_ext(int slot, const char *comment)
 			info->comment[0] = '\0';
 		}
 
+
 		// Set default title (can be improved with game detection)
 		snprintf(info->title, sizeof(info->title), "Slot %03d", slot);
 

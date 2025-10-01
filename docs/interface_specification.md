@@ -349,14 +349,27 @@ void MEMCALL memm_vram(UINT operate);
 ### 8.1 状態保存
 
 ```c
-// 状態保存
+// 基本状態保存
 int statsave_save(const OEMCHAR* filename);
 
 // 状態チェック
 int statsave_check(const OEMCHAR* filename, OEMCHAR* buf, int size);
 
-// 状態復元
+// 基本状態復元
 int statsave_load(const OEMCHAR* filename);
+
+// 拡張状態保存（スロット対応）
+int statsave_save_ext(int slot, const char* comment);
+int statsave_save_ext_with_hwnd(int slot, const char* comment, HWND hMainWnd);
+
+// 拡張状態復元（スロット対応）
+int statsave_load_ext(int slot);
+
+// スロット管理
+int statsave_delete_slot(int slot);
+int statsave_get_info(int slot, NP2SLOT_INFO* info);
+int statsave_get_slot_count(void);
+int statsave_get_used_slots(int* slots, int max_count);
 ```
 
 ### 8.2 状態フラグハンドル

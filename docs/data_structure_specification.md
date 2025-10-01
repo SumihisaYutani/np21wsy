@@ -229,9 +229,59 @@ typedef struct {
 
 ---
 
-## 4. イベントシステム構造体
+## 4. ステートセーブシステム構造体
 
-### 4.1 イベントアイテム構造体
+### 4.1 NP2SLOT_INFO構造体
+
+セーブスロットの情報を管理する構造体。
+
+```c
+typedef struct {
+    UINT8       used;               // スロット使用フラグ
+    UINT8       protect_flag;       // 保護フラグ
+    UINT16      flags;              // 拡張フラグ
+    UINT64      save_time;          // 保存時刻
+    UINT32      file_size;          // ファイルサイズ
+    char        title[32];          // タイトル
+    char        comment[64];        // コメント
+    UINT32      checksum;           // チェックサム
+} NP2SLOT_INFO;
+```
+
+### 4.2 NP2SLOT_MASTER構造体
+
+全スロットの管理情報を保持する構造体。
+
+```c
+typedef struct {
+    NP2SLOT_INFO slots[200];        // 200スロット
+    UINT32       used_count;        // 使用中スロット数
+    UINT32       version;           // バージョン
+    char         signature[16];     // 署名
+} NP2SLOT_MASTER;
+```
+
+### 4.3 ステートファイル構造体
+
+```c
+typedef struct {
+    char        name[16];           // "Neko Project II"
+    char        vername[28];        // "create by NP2.EXE"
+    UINT32      ver;                // バージョン
+} NP2FHDR;
+
+typedef struct {
+    char        index[10];          // セクション名
+    UINT16      ver;                // バージョン
+    UINT32      size;               // データサイズ
+} NP2FENT;
+```
+
+---
+
+## 5. イベントシステム構造体
+
+### 5.1 イベントアイテム構造体
 
 ```c
 typedef void (*NEVENTCB)(NEVENTITEM item);

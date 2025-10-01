@@ -28,48 +28,54 @@
 
 #### 3.1.1 スロット管理システム
 ```c
-#define MAX_SAVE_SLOTS 10
-#define AUTOSAVE_SLOTS 5
+#define MAX_SAVE_SLOTS 200  // 実装済み: 200スロット対応
 
 typedef struct {
-    UINT8       slot_id;
-    OEMCHAR     slot_name[64];
-    OEMCHAR     description[256];
-    SYSTEMTIME  save_time;
-    UINT32      playtime_sec;
-    UINT8       screenshot[SCREENSHOT_SIZE];
-    OEMCHAR     disk_info[MAX_PATH];
-    BOOL        is_valid;
-    BOOL        is_autosave;
-} SAVESTATE_SLOT;
+    UINT8       used;               // スロット使用フラグ
+    UINT8       protect_flag;       // 保護フラグ
+    UINT16      flags;              // 拡張フラグ
+    UINT64      save_time;          // 保存時刻
+    UINT32      file_size;          // ファイルサイズ
+    char        title[32];          // タイトル
+    char        comment[64];        // コメント
+    UINT32      checksum;           // チェックサム
+} NP2SLOT_INFO;
 
 typedef struct {
-    SAVESTATE_SLOT  slots[MAX_SAVE_SLOTS];
-    SAVESTATE_SLOT  autosave_slots[AUTOSAVE_SLOTS];
-    UINT8           last_used_slot;
-    UINT8           autosave_index;
-    BOOL            autosave_enabled;
-    UINT32          autosave_interval;
-} SAVESTATE_MANAGER;
+    NP2SLOT_INFO slots[200];        // 200スロット
+    UINT32       used_count;        // 使用中スロット数
+    UINT32       version;           // バージョン
+    char         signature[16];     // 署名
+} NP2SLOT_MASTER;
 ```
+
+#### 実装状況
+- ✅ **200スロット対応**: 基本的なマルチスロット機能は実装済み
+- ✅ **スロット情報管理**: メタデータの永続化機能実装済み
+- ❌ **オートセーブ**: 未実装（将来拡張予定）
+- ❌ **詳細メタデータ**: プレイ時間、スクリーンショット等は未実装
 
 #### 3.1.2 スロット操作API
 ```c
-// スロット管理
-int statsave_slot_save(UINT8 slot_id, const OEMCHAR *name, const OEMCHAR *desc);
-int statsave_slot_load(UINT8 slot_id);
-int statsave_slot_delete(UINT8 slot_id);
-BOOL statsave_slot_exists(UINT8 slot_id);
+// 実装済みAPI
+int statsave_save_ext(int slot, const char *comment);
+int statsave_save_ext_with_hwnd(int slot, const char *comment, HWND hMainWnd);
+int statsave_load_ext(int slot);
+int statsave_delete_slot(int slot);
+int statsave_get_info(int slot, NP2SLOT_INFO *info);
+int statsave_get_slot_count(void);
+int statsave_get_used_slots(int *slots, int max_count);
 
-// クイック操作
-int statsave_quick_save(void);
-int statsave_quick_load(void);
-
-// オートセーブ
-int statsave_auto_save(void);
-void statsave_auto_save_enable(BOOL enable);
-void statsave_auto_save_set_interval(UINT32 minutes);
+// 将来拡張予定
+int statsave_quick_save(void);           // 未実装
+int statsave_quick_load(void);           // 未実装
+int statsave_auto_save(void);            // 未実装
+void statsave_auto_save_enable(BOOL enable);    // 未実装
+void statsave_auto_save_set_interval(UINT32 minutes);  // 未実装
 ```
+
+#### 重要な変更点
+- **ディスクパス管理**: 当初設計されたスロット情報内でのディスクパス保存機能は、既存のステートファイル形式に組み込まれた機能と重複するため削除されました。ディスクイメージの自動マウントは既存の`flagsave_sxsi()`/`flagload_sxsi()`/`flagload_fdd()`機能により適切に動作します。
 
 ### 3.2 拡張メタデータ
 

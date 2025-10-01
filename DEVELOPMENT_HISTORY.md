@@ -30,6 +30,9 @@ HBITMAP statsave_load_thumbnail(int slot);
 int statsave_check_slot_exists(int slot);
 ```
 
+#### 注意事項
+- **ディスクパス保存機能**: 当初実装されたスロット情報でのディスクパス保存機能は、既存のステートファイル形式に組み込まれたディスクパス保存・復元機能と重複していたため削除されました。ディスクイメージの自動マウントは既存の`flagsave_sxsi()`/`flagload_sxsi()`/`flagload_fdd()`機能により適切に動作します。
+
 ### 2. State Manager GUI
 
 #### 背景

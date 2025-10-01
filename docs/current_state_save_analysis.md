@@ -165,6 +165,15 @@ enum {
 int statsave_save(const OEMCHAR *filename);
 int statsave_check(const OEMCHAR *filename, OEMCHAR *buf, int size);
 int statsave_load(const OEMCHAR *filename);
+
+// 拡張API（実装済み）
+int statsave_save_ext(int slot, const char *comment);
+int statsave_save_ext_with_hwnd(int slot, const char *comment, HWND hMainWnd);
+int statsave_load_ext(int slot);
+int statsave_delete_slot(int slot);
+int statsave_get_info(int slot, NP2SLOT_INFO *info);
+int statsave_get_slot_count(void);
+int statsave_get_used_slots(int *slots, int max_count);
 ```
 
 #### 内部API

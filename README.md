@@ -104,10 +104,18 @@ np21x64w.exe
 
 ## 開発情報
 
+### 🚀 自動ビルド（GitHub Actions）
+![Build Status](https://github.com/SumihisaYutani/np21wsy/workflows/NP21WSY%20Windows%20Build/badge.svg)
+
+- **自動ビルド**: プッシュ時に自動実行
+- **マトリックスビルド**: Win32/x64 両対応
+- **成果物配布**: ビルド済み実行ファイルを自動生成
+
 ### ビルド環境
 - **Visual Studio**: 2022 Community (Platform Toolset v143)
 - **アセンブラ**: NASM (x86), YASM (x64)
 - **SDK**: Windows 10 SDK
+- **CI/CD**: GitHub Actions
 
 ### アーキテクチャ
 ```
@@ -120,6 +128,12 @@ NP21WSY Core
 ```
 
 ## 変更履歴
+
+### v1.1 (2025-10-19)
+- ✅ GitHub Actions CI/CD設定
+- ✅ 自動Windows ビルドパイプライン
+- ✅ Win32/x64 マトリックスビルド対応
+- ✅ アーティファクト自動配布機能
 
 ### v1.0 (2025-09-23)
 - ✅ 200スロットステートセーブ機能実装

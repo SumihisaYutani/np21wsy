@@ -32,7 +32,10 @@ jobs:
         Invoke-WebRequest -Uri $yasmUrl -OutFile "yasm.exe" -UseBasicParsing
         New-Item -ItemType Directory -Force -Path "C:\yasm"
         Move-Item yasm.exe C:\yasm\yasm.exe
+        $env:PATH = "C:\yasm;" + $env:PATH
         echo "C:\yasm" >> $env:GITHUB_PATH
+        # Verify YASM installation
+        & "C:\yasm\yasm.exe" --version
 
     - name: Verify project file
       run: |
@@ -46,8 +49,19 @@ jobs:
         }
 
     - name: Build NP21WSY
+      env:
+        PATH: "C:\\yasm;${{ env.PATH }}"
       run: |
         cd win9x
+        # Verify tools are accessible
+        Write-Host "=== Tool Verification ==="
+        Write-Host "NASM version:"
+        nasm -version
+        Write-Host "YASM version:"
+        yasm --version
+        Write-Host "========================="
+        
+        # Build project
         msbuild np2vs2019.vcxproj /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /p:PlatformToolset=v143 /p:WindowsTargetPlatformVersion=10.0 /verbosity:minimal
 
     - name: Upload artifacts

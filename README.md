@@ -104,18 +104,21 @@ np21x64w.exe
 
 ## 開発情報
 
-### 🚀 自動ビルド（GitHub Actions）
+### 🚀 自動ビルド（GitHub Actions - セルフホステッド）
 ![Build Status](https://github.com/SumihisaYutani/np21wsy/workflows/NP21WSY%20Windows%20Build/badge.svg)
 
-- **自動ビルド**: プッシュ時に自動実行
-- **マトリックスビルド**: Win32/x64 両対応
+- **セルフホステッドランナー**: ローカル環境での安定ビルド
+- **既存ツール活用**: Visual Studio 2022 + NASM/YASM
+- **マトリックスビルド**: Win32/x64 両プラットフォーム対応
+- **増分更新**: git fetch方式で高速デプロイ
 - **成果物配布**: ビルド済み実行ファイルを自動生成
 
 ### ビルド環境
 - **Visual Studio**: 2022 Community (Platform Toolset v143)
 - **アセンブラ**: NASM (x86), YASM (x64)
 - **SDK**: Windows 10 SDK
-- **CI/CD**: GitHub Actions
+- **CI/CD**: GitHub Actions (セルフホステッドランナー)
+- **ビルドマシン**: ローカル開発環境
 
 ### アーキテクチャ
 ```
@@ -127,13 +130,32 @@ NP21WSY Core
 └── File Management System
 ```
 
+### 🔄 自動ビルドフロー
+```
+git push
+↓
+GitHub Actions トリガー
+↓
+セルフホステッドランナー起動
+├── 環境チェック (VS2022, NASM, YASM)
+├── git fetch (増分更新)
+├── Visual Studio 環境初期化
+├── マトリックスビルド
+│   ├── Win32 + Release
+│   └── x64 + Release
+└── アーティファクト生成・配布
+```
+
 ## 変更履歴
 
 ### v1.1 (2025-10-19)
 - ✅ GitHub Actions CI/CD設定
-- ✅ 自動Windows ビルドパイプライン
+- ✅ セルフホステッドランナー導入
+- ✅ 自動Windows ビルドパイプライン（ローカル環境）
 - ✅ Win32/x64 マトリックスビルド対応
+- ✅ 既存開発ツール活用（VS2022, NASM, YASM）
 - ✅ アーティファクト自動配布機能
+- ✅ 増分更新による高速ビルド
 
 ### v1.0 (2025-09-23)
 - ✅ 200スロットステートセーブ機能実装

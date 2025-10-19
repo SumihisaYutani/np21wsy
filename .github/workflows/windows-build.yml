@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-windows:
-    runs-on: windows-latest
+    runs-on: self-hosted
     timeout-minutes: 30
 
     strategy:
@@ -20,49 +20,63 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v2
-
-    - name: Setup NASM
-      uses: ilammy/setup-nasm@v1
-
-    - name: Setup YASM
+    - name: Setup environment
       run: |
-        $yasmUrl = "https://github.com/yasm/yasm/releases/download/v1.3.0/yasm-1.3.0-win64.exe"
-        Invoke-WebRequest -Uri $yasmUrl -OutFile "yasm.exe" -UseBasicParsing
-        New-Item -ItemType Directory -Force -Path "C:\yasm"
-        Move-Item yasm.exe C:\yasm\yasm.exe
-        $env:PATH = "C:\yasm;" + $env:PATH
-        echo "C:\yasm" >> $env:GITHUB_PATH
-        # Verify YASM installation
-        & "C:\yasm\yasm.exe" --version
+        Write-Host "=== Environment Check ==="
+        Write-Host "Current directory: $(Get-Location)"
+        Write-Host "Available tools:"
+        
+        # Check Visual Studio installation
+        $vsPath = "${env:ProgramFiles}\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat"
+        if (Test-Path $vsPath) {
+          Write-Host "✅ Visual Studio 2022 found"
+        } else {
+          Write-Host "❌ Visual Studio 2022 not found at expected location"
+        }
+        
+        # Check for existing tools
+        try { 
+          $nasmVersion = & nasm -version 2>$null
+          Write-Host "✅ NASM: $nasmVersion"
+        } catch { 
+          Write-Host "❌ NASM not found in PATH" 
+        }
+        
+        try { 
+          $yasmVersion = & yasm --version 2>$null
+          Write-Host "✅ YASM: $yasmVersion"
+        } catch { 
+          Write-Host "❌ YASM not found in PATH" 
+        }
+
+    - name: Initialize Visual Studio environment
+      run: |
+        cmd /c "call `"${env:ProgramFiles}\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat`" && set" | ForEach-Object {
+          if ($_ -match "^([^=]+)=(.*)") {
+            [Environment]::SetEnvironmentVariable($matches[1], $matches[2])
+          }
+        }
 
     - name: Verify project file
       run: |
         cd win9x
         if (Test-Path "np2vs2019.vcxproj") {
-          Write-Host "Project file found"
+          Write-Host "✅ Project file found"
           Get-Content np2vs2019.vcxproj | Select-String "PlatformToolset" | Select-Object -First 3
         } else {
-          Write-Host "Project file not found, listing directory:"
+          Write-Host "❌ Project file not found, listing directory:"
           Get-ChildItem
         }
 
     - name: Build NP21WSY
-      env:
-        PATH: "C:\\yasm;${{ env.PATH }}"
       run: |
         cd win9x
-        # Verify tools are accessible
-        Write-Host "=== Tool Verification ==="
-        Write-Host "NASM version:"
-        nasm -version
-        Write-Host "YASM version:"
-        yasm --version
-        Write-Host "========================="
+        Write-Host "=== Building NP21WSY ==="
+        Write-Host "Platform: ${{ matrix.platform }}"
+        Write-Host "Configuration: ${{ matrix.configuration }}"
         
-        # Build project
-        msbuild np2vs2019.vcxproj /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /p:PlatformToolset=v143 /p:WindowsTargetPlatformVersion=10.0 /verbosity:minimal
+        # Use local MSBuild with full Visual Studio environment
+        msbuild np2vs2019.vcxproj /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /p:PlatformToolset=v143 /verbosity:normal
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4

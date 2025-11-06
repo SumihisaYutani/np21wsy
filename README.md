@@ -104,10 +104,6 @@ np21x64w.exe
 
 ## 開発情報
 
-### 🚀 自動ビルド（GitHub Actions - セルフホステッド）
-![Build Status](https://github.com/SumihisaYutani/np21wsy/workflows/NP21WSY%20Windows%20Build/badge.svg)
-
-- **セルフホステッドランナー**: ローカル環境での安定ビルド
 - **既存ツール活用**: Visual Studio 2022 + NASM/YASM
 - **マトリックスビルド**: Win32/x64 両プラットフォーム対応
 - **増分更新**: git fetch方式で高速デプロイ

@@ -1,0 +1,178 @@
+name: 🔧 ビルド・環境問題
+description: コンパイル、ビルド、CI/CDに関する問題を報告してください
+title: "[BUILD] "
+labels: ["build", "environment"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ビルド・環境問題のレポートありがとうございます。
+        
+        > **参考**: [BUILD_GUIDE.md](https://github.com/SumihisaYutani/np21wsy/blob/master/BUILD_GUIDE.md) もご確認ください。
+
+  - type: dropdown
+    id: build-type
+    attributes:
+      label: 🏗️ ビルドタイプ
+      description: どの種類のビルド問題ですか？
+      options:
+        - ローカルビルド (Visual Studio)
+        - GitHub Actions CI/CD
+        - 依存関係・ライブラリ
+        - 環境設定
+        - その他
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-description
+    attributes:
+      label: 🔧 問題の詳細
+      description: 発生しているビルド問題について詳しく説明してください
+      placeholder: |
+        例：
+        - Visual Studio 2022でコンパイルエラーが発生
+        - NASM/YASMのパスが見つからない
+        - GitHub Actionsが失敗する
+    validations:
+      required: true
+
+  - type: textarea
+    id: error-output
+    attributes:
+      label: ❌ エラー出力
+      description: |
+        ビルド時のエラーメッセージやログを貼り付けてください
+        （個人情報やパスワードは削除してください）
+      placeholder: |
+        例：
+        error C2065: 'SOME_DEFINE' : 識別子が宣言されていません
+        fatal error LNK1181: 入力ファイル 'library.lib' を開けません
+      render: text
+    validations:
+      required: true
+
+  - type: dropdown
+    id: vs-version
+    attributes:
+      label: 🛠️ Visual Studio バージョン
+      description: 使用しているVisual Studioのバージョン（ローカルビルドの場合）
+      options:
+        - Visual Studio 2022 Community
+        - Visual Studio 2022 Professional
+        - Visual Studio 2022 Enterprise
+        - Visual Studio 2019
+        - Visual Studio Code
+        - 使用していない
+        - その他
+
+  - type: dropdown
+    id: target-platform
+    attributes:
+      label: 🎯 ターゲットプラットフォーム
+      description: ビルド対象のプラットフォーム
+      options:
+        - Win32 (x86)
+        - x64
+        - 両方
+        - その他
+    validations:
+      required: true
+
+  - type: dropdown
+    id: build-configuration
+    attributes:
+      label: ⚙️ ビルド設定
+      description: ビルド設定
+      options:
+        - Debug
+        - Release
+        - 両方
+        - その他
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 💻 環境詳細
+      description: |
+        ビルド環境の詳細情報を記載してください
+      placeholder: |
+        例：
+        OS: Windows 11 Pro 22H2
+        Visual Studio: 2022 Community (17.8.3)
+        Windows SDK: 10.0.22621.0
+        NASM: 2.15.05
+        YASM: 1.3.0
+        Git: 2.42.0
+      value: |
+        OS: 
+        Visual Studio: 
+        Windows SDK: 
+        NASM: 
+        YASM: 
+        Git: 
+
+  - type: textarea
+    id: steps-attempted
+    attributes:
+      label: 🔄 試行した解決方法
+      description: 問題解決のために既に試したことがあれば記載してください
+      placeholder: |
+        例：
+        - Visual Studioの再インストール
+        - 環境変数の確認と設定
+        - 依存ライブラリの再インストール
+        - クリーンビルドの実行
+
+  - type: checkboxes
+    id: github-actions
+    attributes:
+      label: 🚀 GitHub Actions 関連 (該当する場合)
+      description: GitHub Actions CI/CDに関する問題の場合、以下を確認してください
+      options:
+        - label: セルフホステッドランナーの問題
+        - label: ワークフロー定義の問題
+        - label: 環境変数・シークレットの問題
+        - label: 依存関係インストールの問題
+        - label: アーティファクト生成の問題
+
+  - type: textarea
+    id: github-actions-log
+    attributes:
+      label: 🤖 GitHub Actions ログ
+      description: |
+        GitHub Actionsの失敗ログがあれば貼り付けてください
+      placeholder: |
+        GitHub Actions の Run ページからログをコピーして貼り付けてください
+      render: text
+
+  - type: textarea
+    id: build-files
+    attributes:
+      label: 📁 関連ファイル
+      description: |
+        問題に関連するファイルの情報があれば記載してください
+      placeholder: |
+        例：
+        - 変更したプロジェクトファイル (.vcxproj)
+        - カスタマイズした設定
+        - 追加したソースファイル
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: ✅ 確認事項
+      description: 以下の項目を確認してください
+      options:
+        - label: BUILD_GUIDE.mdを確認した
+          required: true
+        - label: 必要な開発ツールがインストールされている
+          required: true
+        - label: 環境変数（特にNASM/YASMパス）を確認した
+          required: true
+        - label: クリーンビルドを試した
+          required: true

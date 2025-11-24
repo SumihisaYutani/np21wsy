@@ -1,0 +1,159 @@
+name: ✨ 機能要望
+description: NP21WSYに新しい機能や改善を提案してください
+title: "[FEATURE] "
+labels: ["enhancement", "feature-request"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        機能要望をお寄せいただき、ありがとうございます！
+        
+        > **注意**: 技術的に実装が困難な機能もあります。[既知の制限事項](https://github.com/SumihisaYutani/np21wsy#既知の制限事項)もご確認ください。
+
+  - type: textarea
+    id: feature-summary
+    attributes:
+      label: ✨ 機能の概要
+      description: 提案する機能について簡潔に説明してください
+      placeholder: 例：State ManagerでスロットをD&Dで並び替えできるようにしたい
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: 💡 背景・動機
+      description: なぜこの機能が必要なのか、どんな問題を解決するのかを説明してください
+      placeholder: |
+        現在は200スロットの管理が大変で、古いセーブデータと新しいセーブデータが混在してしまう。
+        ユーザーが自由にスロットの順番を変更できれば、ゲームごと・進行度ごとに整理できる。
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: 🎯 提案する解決策
+      description: この機能をどのように実装すべきか、具体的なアイデアを説明してください
+      placeholder: |
+        例：
+        1. State Manager のListViewでドラッグ&ドロップ操作を有効化
+        2. スロット番号の自動リネーム機能
+        3. 「整理モード」と「通常モード」の切り替えボタン
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 🔄 代替案
+      description: 他の解決方法があれば記載してください
+      placeholder: |
+        例：
+        - フォルダ分け機能（ゲーム別フォルダ）
+        - タグ付け機能
+        - 検索・フィルタ機能
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 🎯 優先度
+      description: この機能の優先度をどのように考えますか？
+      options:
+        - 高 - 必須の機能、すぐに実装してほしい
+        - 中 - あると便利、時間があるときに実装してほしい
+        - 低 - 将来的に実装されればよい
+      default: 1
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: 🏷️ カテゴリ
+      description: この機能はどのカテゴリに属しますか？
+      options:
+        - State Manager UI/UX改善
+        - セーブシステム機能強化
+        - エミュレーション機能改善
+        - BIOS/ROM管理
+        - ディスクイメージ機能
+        - 音声関連
+        - 画面表示関連
+        - 設定・環境
+        - パフォーマンス改善
+        - その他
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: 📋 使用例
+      description: この機能を実際にどのような場面で使用するか、具体例を挙げてください
+      placeholder: |
+        例：
+        1. 「英雄伝説2」を遊んでいる時
+           - スロット1-10: 序盤のセーブデータ
+           - スロット11-20: 中盤のセーブデータ
+           - スロット21-30: 終盤のセーブデータ
+        
+        2. 複数のゲームを並行して遊んでいる時
+           - スロット1-50: ゲーム A
+           - スロット51-100: ゲーム B
+           - スロット101-150: ゲーム C
+
+  - type: textarea
+    id: technical-considerations
+    attributes:
+      label: 🔧 技術的考慮事項
+      description: |
+        実装にあたって技術的に考慮すべき点があれば記載してください
+        （プログラミング知識がなくても構いません）
+      placeholder: |
+        例：
+        - 既存のセーブファイルとの互換性
+        - パフォーマンスへの影響
+        - UI操作の複雑さ
+        - 設定ファイルでの保存方法
+
+  - type: textarea
+    id: mockup-design
+    attributes:
+      label: 🎨 UI/UX デザイン案
+      description: |
+        具体的なUI/UXのアイデアがあれば記載してください
+        モックアップ画像や手描きのスケッチも歓迎です
+      placeholder: |
+        例：
+        - ボタンの配置
+        - メニューの構成
+        - 操作フロー
+        - 画面レイアウト
+
+  - type: checkboxes
+    id: compatibility
+    attributes:
+      label: 🔄 互換性の考慮
+      description: この機能は以下の項目と互換性を保つ必要がありますか？
+      options:
+        - label: 既存のセーブファイル形式
+        - label: 現在の設定ファイル
+        - label: オリジナルのNeko Project 21/W
+        - label: 他のPC-9801エミュレータ
+        - label: 古いバージョンのNP21WSY
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: ✅ 確認事項
+      description: 以下の項目を確認してください
+      options:
+        - label: 既知の制限事項を確認した
+          required: true
+        - label: 類似の機能が既存issueで提案されていないか確認した
+          required: true
+        - label: この機能がNP21WSYの目標に合致していると思う
+          required: true

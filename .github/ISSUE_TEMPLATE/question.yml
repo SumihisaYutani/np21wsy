@@ -1,0 +1,127 @@
+name: ❓ 質問・サポート
+description: NP21WSYの使用方法やセットアップに関する質問
+title: "[QUESTION] "
+labels: ["question"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ご質問をお寄せいただき、ありがとうございます！
+        
+        > **まず確認**: [README.md](https://github.com/SumihisaYutani/np21wsy/blob/master/README.md) と [トラブルシューティングガイド](https://github.com/SumihisaYutani/np21wsy/blob/master/docs/troubleshooting_guide.md) をご確認ください。
+
+  - type: dropdown
+    id: question-type
+    attributes:
+      label: ❓ 質問の種類
+      description: どの分野に関する質問ですか？
+      options:
+        - セットアップ・インストール
+        - State Manager の使い方
+        - ゲーム・ソフトウェア実行
+        - BIOS・ROM設定
+        - ディスクイメージ関連
+        - 音声・サウンド設定
+        - 画面表示設定
+        - パフォーマンス
+        - エラー・トラブル
+        - その他
+    validations:
+      required: true
+
+  - type: textarea
+    id: question-detail
+    attributes:
+      label: 🔍 質問の詳細
+      description: 具体的な質問内容を記載してください
+      placeholder: |
+        例：
+        - State Managerで200スロット全てが表示されない
+        - 特定のゲームでだけ音が出ない
+        - セットアップ後にエミュレータが起動しない
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-tried
+    attributes:
+      label: 🔧 試したこと
+      description: 問題解決のために既に試したことがあれば記載してください
+      placeholder: |
+        例：
+        - README.mdのトラブルシューティングを確認した
+        - 設定ファイルを削除して初期化した
+        - 管理者権限で実行してみた
+        - 別のBIOSファイルを試した
+
+  - type: textarea
+    id: environment-info
+    attributes:
+      label: 💻 環境情報
+      description: 使用環境の情報を教えてください
+      value: |
+        OS: (例: Windows 11 Pro)
+        NP21WSYバージョン: (例: v1.1)
+        アーキテクチャ: (例: x64)
+        使用するゲーム/ソフト: (例: 英雄伝説2)
+        BIOS: (例: PC-9801FA BIOS)
+
+  - type: textarea
+    id: expected-outcome
+    attributes:
+      label: 🎯 期待する結果
+      description: どのような動作を期待しているか説明してください
+      placeholder: |
+        例：
+        - ゲームが正常に起動して音声付きで遊べること
+        - State Managerで200スロット全てを確認できること
+        - BIOSファイルを正しく読み込めること
+
+  - type: textarea
+    id: current-situation
+    attributes:
+      label: 📋 現在の状況
+      description: 現在どのような状況なのかを詳しく説明してください
+      placeholder: |
+        例：
+        - エミュレータは起動するが、ゲーム読み込み時にエラーが出る
+        - State Managerは開くが、スロット100以降が表示されない
+        - 音声設定を変更しても音が出ない
+
+  - type: textarea
+    id: additional-files
+    attributes:
+      label: 📁 関連ファイル・設定
+      description: |
+        関連するファイルや設定情報があれば記載してください
+        （パスワードや個人情報は削除してください）
+      placeholder: |
+        例：
+        - 使用しているディスクイメージの形式 (.d88, .hdi など)
+        - 設定ファイル (np21x64w.ini) の関連部分
+        - エラーログ (debug_direct.log) の内容
+
+  - type: checkboxes
+    id: documentation-check
+    attributes:
+      label: 📚 ドキュメント確認
+      description: 以下のドキュメントを確認しましたか？
+      options:
+        - label: README.md を読んだ
+          required: true
+        - label: トラブルシューティングガイドを確認した
+          required: true
+        - label: BUILD_GUIDE.md を確認した（ビルド関連の場合）
+          required: false
+
+  - type: checkboxes
+    id: urgency
+    attributes:
+      label: ⏰ 緊急度
+      description: この質問の緊急度を選択してください
+      options:
+        - label: 高 - すぐに解決したい
+        - label: 中 - 数日中に解決できればよい  
+        - label: 低 - 時間があるときに解決したい

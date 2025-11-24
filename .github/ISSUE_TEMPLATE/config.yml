@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 ドキュメント・README
+    url: https://github.com/SumihisaYutani/np21wsy/blob/master/README.md
+    about: まずREADMEをご確認ください。セットアップ方法や基本的な使い方が説明されています。
+  
+  - name: 🔧 トラブルシューティング
+    url: https://github.com/SumihisaYutani/np21wsy/blob/master/docs/troubleshooting_guide.md
+    about: よくある問題と解決方法がまとめられています。問題が発生した場合はまずこちらをご確認ください。
+  
+  - name: 🏗️ ビルドガイド
+    url: https://github.com/SumihisaYutani/np21wsy/blob/master/BUILD_GUIDE.md
+    about: ソースからビルドする場合の手順とトラブルシューティング情報です。
+  
+  - name: 📋 開発履歴
+    url: https://github.com/SumihisaYutani/np21wsy/blob/master/DEVELOPMENT_HISTORY.md
+    about: プロジェクトの開発経緯と技術的詳細について記載されています。

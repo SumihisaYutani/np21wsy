@@ -1,0 +1,165 @@
+name: 🐛 バグレポート
+description: NP21WSYで発生したバグを報告してください
+title: "[BUG] "
+labels: ["bug"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        バグレポートありがとうございます。NP21WSYの改善にご協力いただけると幸いです。
+        
+        > **注意**: セキュリティに関する脆弱性については、公開issueではなく直接開発者にご連絡ください。
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: 🐛 バグの概要
+      description: 発生したバグについて簡潔に説明してください
+      placeholder: 例：State Managerでセーブスロットを選択すると、アプリケーションがクラッシュする
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: 🔄 再現手順
+      description: バグを再現するための詳細な手順を記載してください
+      placeholder: |
+        1. NP21WSYを起動する
+        2. State Managerを開く
+        3. スロット5を選択する
+        4. 「Save」ボタンをクリックする
+        5. アプリケーションがクラッシュする
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: ✅ 期待する動作
+      description: 正常に動作した場合の期待される動作を説明してください
+      placeholder: スロット5にゲームの状態が正常に保存される
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: ❌ 実際の動作
+      description: 実際に発生した動作を詳しく説明してください
+      placeholder: アプリケーションがクラッシュし、エラーダイアログが表示される
+    validations:
+      required: true
+
+  - type: dropdown
+    id: version
+    attributes:
+      label: 🏷️ NP21WSYバージョン
+      description: 使用しているNP21WSYのバージョンを選択してください
+      options:
+        - v1.1 (最新版)
+        - v1.0
+        - 開発版 (main branch)
+        - その他/不明
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os-version
+    attributes:
+      label: 💻 Windows バージョン
+      description: 使用しているWindowsのバージョンを選択してください
+      options:
+        - Windows 11 (最新)
+        - Windows 11 (22H2)
+        - Windows 10 (22H2)
+        - Windows 10 (21H2)
+        - Windows 10 (その他)
+        - その他
+    validations:
+      required: true
+
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: 🏗️ アーキテクチャ
+      description: システムのアーキテクチャを選択してください
+      options:
+        - x64 (64-bit)
+        - x86 (32-bit)
+        - その他/不明
+    validations:
+      required: true
+
+  - type: textarea
+    id: bios-files
+    attributes:
+      label: 📂 BIOS ファイル
+      description: 使用しているBIOSファイルの情報
+      placeholder: |
+        例：
+        - bios.rom (PC-9801FA BIOS)
+        - font.rom (標準フォント)
+        - sound.rom (86音源)
+      value: |
+        - bios.rom: 
+        - font.rom: 
+        - sound.rom: 
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 📋 ログファイル・エラーメッセージ
+      description: |
+        関連するログファイル（debug_direct.log）の内容やエラーメッセージがあれば貼り付けてください
+      placeholder: |
+        debug_direct.log の関連部分やエラーダイアログのメッセージを貼り付けてください
+      render: text
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 📝 追加情報
+      description: |
+        その他の有用な情報があれば記載してください
+        - スクリーンショット
+        - 設定ファイル (np21x64w.ini) の内容
+        - 特定のゲーム/ソフトウェアでのみ発生するかどうか
+      placeholder: |
+        例：
+        - 特定のゲーム「〇〇」でのみ発生
+        - SaveStatesフォルダに50個以上のファイルがある場合にのみ発生
+        - State Manager起動時に毎回発生
+
+  - type: checkboxes
+    id: component
+    attributes:
+      label: 🎯 関連コンポーネント
+      description: このバグがどのコンポーネントに関連しているか選択してください（複数選択可）
+      options:
+        - label: State Manager (ステートセーブ/ロード GUI)
+        - label: Save System (ステートセーブ機能)
+        - label: エミュレーション コア
+        - label: BIOS/ROM 読み込み
+        - label: ディスクイメージ処理
+        - label: 音声出力
+        - label: 画面表示
+        - label: 設定ファイル
+        - label: その他
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: ✅ 確認事項
+      description: 以下の項目を確認してください
+      options:
+        - label: 最新版のNP21WSYを使用している
+          required: true
+        - label: 必要なBIOSファイルが正しく配置されている
+          required: true
+        - label: 管理者権限で実行してみた
+          required: false
+        - label: 設定ファイルを初期化して試してみた
+          required: false

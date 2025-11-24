@@ -1,0 +1,162 @@
+# GitHub Labels Configuration for NP21WSY
+# This file defines the labels used for issue and PR management
+
+# Issue Types (種別)
+- name: "bug"
+  description: "バグ報告 - Something isn't working"
+  color: "d73a49"
+
+- name: "enhancement"
+  description: "機能改善 - Improvement to existing functionality"
+  color: "a2eeef"
+
+- name: "feature-request"
+  description: "新機能要望 - Request for new functionality"
+  color: "7057ff"
+
+- name: "documentation"
+  description: "ドキュメント - Improvements or additions to documentation"
+  color: "0075ca"
+
+- name: "question"
+  description: "質問 - Further information is requested"
+  color: "cc317c"
+
+# Component Areas (領域別)
+- name: "state-manager"
+  description: "State Manager GUI関連 - Related to save state management interface"
+  color: "0052cc"
+
+- name: "save-system"
+  description: "セーブシステム - Core save/load functionality"
+  color: "0052cc"
+
+- name: "build"
+  description: "ビルドシステム - Build configuration and compilation"
+  color: "fef2c0"
+
+- name: "ci-cd"
+  description: "CI/CD - GitHub Actions and automated processes"
+  color: "fef2c0"
+
+- name: "environment"
+  description: "環境設定 - Setup and configuration issues"
+  color: "fef2c0"
+
+- name: "emulation-core"
+  description: "エミュレーションコア - PC-9801/9821 emulation engine"
+  color: "006b75"
+
+- name: "bios-rom"
+  description: "BIOS/ROM - BIOS and ROM file handling"
+  color: "006b75"
+
+- name: "disk-image"
+  description: "ディスクイメージ - Floppy and hard disk image handling"
+  color: "006b75"
+
+- name: "audio"
+  description: "音声 - Sound and audio functionality"
+  color: "006b75"
+
+- name: "display"
+  description: "画面表示 - Display and graphics rendering"
+  color: "006b75"
+
+- name: "config"
+  description: "設定ファイル - Configuration file handling"
+  color: "006b75"
+
+# Priority (優先度)
+- name: "priority-critical"
+  description: "緊急 - Critical issue requiring immediate attention"
+  color: "b60205"
+
+- name: "priority-high"
+  description: "高 - High priority issue"
+  color: "d93f0b"
+
+- name: "priority-medium"
+  description: "中 - Medium priority issue"
+  color: "fbca04"
+
+- name: "priority-low"
+  description: "低 - Low priority issue"
+  color: "0e8a16"
+
+# Status (状態)
+- name: "status-investigating"
+  description: "調査中 - Issue is being investigated"
+  color: "f9d0c4"
+
+- name: "status-in-progress"
+  description: "作業中 - Work in progress"
+  color: "c5def5"
+
+- name: "status-blocked"
+  description: "ブロック中 - Blocked by external dependency"
+  color: "e99695"
+
+- name: "status-needs-info"
+  description: "情報不足 - Waiting for more information"
+  color: "d4c5f9"
+
+- name: "status-duplicate"
+  description: "重複 - Duplicate of another issue"
+  color: "cccccc"
+
+- name: "status-wontfix"
+  description: "修正予定なし - Will not be fixed due to constraints"
+  color: "ffffff"
+
+# Technical Constraints (技術的制約)
+- name: "limitation-directdraw"
+  description: "DirectDraw制約 - Limited by DirectDraw dependencies"
+  color: "f3f3f3"
+
+- name: "limitation-architecture"
+  description: "アーキテクチャ制約 - Architectural limitation"
+  color: "f3f3f3"
+
+- name: "limitation-copyright"
+  description: "著作権制約 - Copyright or licensing constraint"
+  color: "f3f3f3"
+
+# Community (コミュニティ)
+- name: "good-first-issue"
+  description: "初心者向け - Good for newcomers"
+  color: "7057ff"
+
+- name: "help-wanted"
+  description: "協力募集 - Community help wanted"
+  color: "008672"
+
+- name: "contributor-needed"
+  description: "貢献者募集 - Specific expertise needed"
+  color: "008672"
+
+# Version/Release (バージョン)
+- name: "version-1.0"
+  description: "v1.0関連 - Related to version 1.0"
+  color: "e6e6e6"
+
+- name: "version-1.1"
+  description: "v1.1関連 - Related to version 1.1"
+  color: "e6e6e6"
+
+- name: "version-next"
+  description: "次期バージョン - For future version"
+  color: "e6e6e6"
+
+# Special Labels (特別)
+- name: "breaking-change"
+  description: "破壊的変更 - Breaking change requiring attention"
+  color: "b60205"
+
+- name: "security"
+  description: "セキュリティ - Security related issue"
+  color: "b60205"
+
+- name: "performance"
+  description: "パフォーマンス - Performance related"
+  color: "0e8a16"
